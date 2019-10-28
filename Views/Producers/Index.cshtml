@@ -1,0 +1,45 @@
+﻿@model IEnumerable<QuanLyBanHangCore.Models.Producer>
+
+@{
+    ViewData["Title"] = "Quản lý nhà sản xuất";
+}
+
+<p>
+    <a asp-action="Create" class="btn cur-p btn-outline-primary">Thêm mới</a>
+</p>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách nhà sản xuất</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Ten)
+                        </th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Ten)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary"><i class="fas fa-tools"></i></a> |
+                                <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary"><i class="fas fa-list"></i></a> |
+                                <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-primary"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyBanHangCore.Models;
 
 namespace QuanLyBanHangCore.Migrations
 {
     [DbContext(typeof(QuanLyBanHangCoreContext))]
-    partial class QuanLyBanHangCoreContextModelSnapshot : ModelSnapshot
+    [Migration("20191028113052_SoLuongSanPham")]
+    partial class SoLuongSanPham
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -142,7 +144,7 @@ namespace QuanLyBanHangCore.Migrations
                     b.Property<int>("ProducerID")
                         .HasColumnType("int");
 
-                    b.Property<int>("SoLuong")
+                    b.Property<int?>("SoLuong")
                         .HasColumnType("int");
 
                     b.Property<string>("Ten")

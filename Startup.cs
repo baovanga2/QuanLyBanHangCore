@@ -36,7 +36,8 @@ namespace QuanLyBanHangCore
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Home/Error");
+                //app.UseDeveloperExceptionPage();
             }
             else
             {
