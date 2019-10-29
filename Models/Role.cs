@@ -12,6 +12,7 @@ namespace QuanLyBanHangCore.Models
 
         [Required]
         [MaxLength(20)]
+        [Display(Name = "Tên")]
         public string Ten { get; set; }
         public List<User> Users { get; set; }
     }

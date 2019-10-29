@@ -17,13 +17,11 @@ namespace QuanLyBanHangCore.Models
 
         public string Ten { get; set; }
 
-        [Required]
         [Display(Name = "Giá")]
         public ulong Gia { get; set; }
 
-        [Required]
         [Display(Name = "Số lượng")]
-        public int SoLuong { get; set; }
+        public ushort SoLuong { get; set; }
         public int ProducerID { get; set; }
 
         [Display(Name = "Nhà sản xuất")]

@@ -12,8 +12,11 @@ namespace QuanLyBanHangCore.Models
 
         [Required]
         [MaxLength(50)]
+        [Display(Name = "Tên")]
         public string Ten { get; set; }
 
+        [RegularExpression(@"^{0}+[0-9""'\s-]*$")]
+        [Display(Name = "Số điện thoại")]
         public string SDT { get; set; }
 
         public List<Order> Orders { get; set; }
