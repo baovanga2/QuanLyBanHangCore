@@ -1,13 +1,13 @@
-﻿@model QuanLyBanHangCore.Models.Producer
+﻿@model QuanLyBanHangCore.Models.Customer
 
 @{
-    ViewData["Title"] = "Chi tiết nhà sản xuất";
+    ViewData["Title"] = "Chi tiết khách hàng";
 }
 
 <h1>Chi tiết</h1>
 
 <div>
-    <h4>Nhà sản xuất</h4>
+    <h4>Khách hàng</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -15,6 +15,12 @@
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Ten)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SDT)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SDT)
         </dd>
     </dl>
 </div>
@@ -27,7 +33,7 @@
 {
     <script>
         $(function () {
-            $('#liNSX').addClass('nav-item active');
+            $('#liKhachHang').addClass('nav-item active');
         });
     </script>
 }

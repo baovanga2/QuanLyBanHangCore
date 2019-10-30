@@ -15,7 +15,8 @@ namespace QuanLyBanHangCore.Models
         [Display(Name = "Tên")]
         public string Ten { get; set; }
 
-        [RegularExpression(@"^{0}+[0-9""'\s-]*$")]
+        [StringLength(10, ErrorMessage = "Số điện thoại gồm 10 chữ số", MinimumLength = 10)]
+        [RegularExpression(@"^[0]+[0-9""'\s-]*$")]
         [Display(Name = "Số điện thoại")]
         public string SDT { get; set; }
 

@@ -4,6 +4,12 @@
     ViewData["Title"] = "Quản lý nhà sản xuất";
 }
 
+@section stylesRieng
+{
+    <!-- Custom styles for this page -->
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+}
+
 <p>
     <a asp-action="Create" class="btn cur-p btn-outline-primary">Thêm mới</a>
 </p>
@@ -43,3 +49,18 @@
     </div>
 </div>
 
+@section scriptsRieng
+{
+    <!-- Page level plugins -->
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="~/mystyle/js/demo/datatables-demo.js"></script>
+
+    <script>
+        $(function () {
+            $('#liNSX').addClass('nav-item active');
+        });
+    </script>
+}

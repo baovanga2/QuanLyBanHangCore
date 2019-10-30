@@ -22,6 +22,7 @@ namespace QuanLyBanHangCore.Models
         public string GioiTinh { get; set; }
 
         [Required]
+        [StringLength(10, ErrorMessage = "Số điện thoại gồm 10 chữ số" ,MinimumLength = 10)]
         [RegularExpression(@"^{0}+[0-9""'\s-]*$")]
         [Display(Name = "Số điện thoại")]
         public string SDT { get; set; }
@@ -41,6 +42,7 @@ namespace QuanLyBanHangCore.Models
         public string TaiKhoan { get; set; }
 
         [Required]
+        [DataType(DataType.Password)]
         [Display(Name = "Mật khẩu")]
         public string MatKhau { get; set; }
 

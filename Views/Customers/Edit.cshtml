@@ -1,24 +1,30 @@
-﻿@model QuanLyBanHangCore.Models.Producer
+﻿@model QuanLyBanHangCore.Models.Customer
 
 @{
-    ViewData["Title"] = "Tạo nhà sản xuất";
+    ViewData["Title"] = "Sửa thông tin khách hàng";
 }
 
-<h1>Thêm</h1>
+<h1>Sửa thông tin</h1>
 
-<h4>Nhà sản xuất</h4>
+<h4>Khách hàng</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
             <div class="form-group">
                 <label asp-for="Ten" class="control-label"></label>
                 <input asp-for="Ten" class="form-control" />
                 <span asp-validation-for="Ten" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Thêm" class="btn btn-primary" />
+                <label asp-for="SDT" class="control-label"></label>
+                <input asp-for="SDT" class="form-control" />
+                <span asp-validation-for="SDT" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -32,7 +38,7 @@
 {
     <script>
         $(function () {
-            $('#liNSX').addClass('nav-item active');
+            $('#liKhachHang').addClass('nav-item active');
         });
     </script>
 }

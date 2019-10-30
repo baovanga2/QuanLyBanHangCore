@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuanLyBanHangCore.Models;
 
 namespace QuanLyBanHangCore.Migrations
 {
     [DbContext(typeof(QuanLyBanHangCoreContext))]
-    partial class QuanLyBanHangCoreContextModelSnapshot : ModelSnapshot
+    [Migration("20191030041734_GioiHanSDT")]
+    partial class GioiHanSDT
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

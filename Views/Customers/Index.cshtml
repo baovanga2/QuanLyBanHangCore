@@ -1,7 +1,7 @@
-﻿@model IEnumerable<QuanLyBanHangCore.Models.Category>
+﻿@model IEnumerable<QuanLyBanHangCore.Models.Customer>
 
 @{
-    ViewData["Title"] = "Quản lý loại sản phẩm";
+    ViewData["Title"] = "Quản lý khách hàng";
 }
 
 @section stylesRieng
@@ -16,7 +16,7 @@
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Danh sách loại sản phẩm</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách khách hàng</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -25,6 +25,9 @@
                     <tr>
                         <th>
                             @Html.DisplayNameFor(model => model.Ten)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.SDT)
                         </th>
                         <th>Hành động</th>
                     </tr>
@@ -35,6 +38,9 @@
                         <tr>
                             <td>
                                 @Html.DisplayFor(modelItem => item.Ten)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.SDT)
                             </td>
                             <td>
                                 <a asp-action="Edit" asp-route-id="@item.ID" class="btn btn-sm btn-primary"><i class="fas fa-tools"></i></a> |
@@ -57,9 +63,10 @@
 
     <!-- Page level custom scripts -->
     <script src="~/mystyle/js/demo/datatables-demo.js"></script>
+
     <script>
         $(function () {
-            $('#liLSP').addClass('nav-item active');
+            $('#liKhachHang').addClass('nav-item active');
         });
     </script>
 }
