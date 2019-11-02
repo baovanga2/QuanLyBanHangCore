@@ -64,9 +64,6 @@ namespace QuanLyBanHangCore.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Gia")
-                        .HasColumnType("decimal(20,0)");
-
                     b.Property<int>("OrderID")
                         .HasColumnType("int");
 
@@ -137,9 +134,6 @@ namespace QuanLyBanHangCore.Migrations
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Gia")
-                        .HasColumnType("decimal(20,0)");
-
                     b.Property<int>("ProducerID")
                         .HasColumnType("int");
 
@@ -158,6 +152,32 @@ namespace QuanLyBanHangCore.Migrations
                     b.HasIndex("ProducerID");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("QuanLyBanHangCore.Models.ProductPrice", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Gia")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TGBD")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TGKT")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ProductID");
+
+                    b.ToTable("ProductPrices");
                 });
 
             modelBuilder.Entity("QuanLyBanHangCore.Models.Role", b =>
@@ -268,6 +288,15 @@ namespace QuanLyBanHangCore.Migrations
                     b.HasOne("QuanLyBanHangCore.Models.Producer", "Producer")
                         .WithMany("Products")
                         .HasForeignKey("ProducerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("QuanLyBanHangCore.Models.ProductPrice", b =>
+                {
+                    b.HasOne("QuanLyBanHangCore.Models.Product", "Product")
+                        .WithMany("ProductPrices")
+                        .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -10,8 +10,8 @@ using QuanLyBanHangCore.Models;
 namespace QuanLyBanHangCore.Migrations
 {
     [DbContext(typeof(QuanLyBanHangCoreContext))]
-    [Migration("20191028051818_FullModel")]
-    partial class FullModel
+    [Migration("20191101080258_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,7 +46,8 @@ namespace QuanLyBanHangCore.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("SDT")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.Property<string>("Ten")
                         .IsRequired()
@@ -64,9 +65,6 @@ namespace QuanLyBanHangCore.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Gia")
-                        .HasColumnType("decimal(20,0)");
 
                     b.Property<int>("OrderID")
                         .HasColumnType("int");
@@ -138,9 +136,6 @@ namespace QuanLyBanHangCore.Migrations
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Gia")
-                        .HasColumnType("decimal(20,0)");
-
                     b.Property<int>("ProducerID")
                         .HasColumnType("int");
 
@@ -149,7 +144,8 @@ namespace QuanLyBanHangCore.Migrations
 
                     b.Property<string>("Ten")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(100)")
+                        .HasMaxLength(100);
 
                     b.HasKey("ID");
 
@@ -158,6 +154,32 @@ namespace QuanLyBanHangCore.Migrations
                     b.HasIndex("ProducerID");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("QuanLyBanHangCore.Models.ProductPrice", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Gia")
+                        .HasColumnType("decimal(20,0)");
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TGBD")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("TGKT")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ProductID");
+
+                    b.ToTable("ProductPrices");
                 });
 
             modelBuilder.Entity("QuanLyBanHangCore.Models.Role", b =>
@@ -190,7 +212,8 @@ namespace QuanLyBanHangCore.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
 
                     b.Property<string>("GioiTinh")
                         .IsRequired()
@@ -206,11 +229,13 @@ namespace QuanLyBanHangCore.Migrations
 
                     b.Property<string>("SDT")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(10)")
+                        .HasMaxLength(10);
 
                     b.Property<string>("TaiKhoan")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20);
 
                     b.Property<string>("Ten")
                         .IsRequired()
@@ -265,6 +290,15 @@ namespace QuanLyBanHangCore.Migrations
                     b.HasOne("QuanLyBanHangCore.Models.Producer", "Producer")
                         .WithMany("Products")
                         .HasForeignKey("ProducerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("QuanLyBanHangCore.Models.ProductPrice", b =>
+                {
+                    b.HasOne("QuanLyBanHangCore.Models.Product", "Product")
+                        .WithMany("ProductPrices")
+                        .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -1,12 +1,12 @@
 ﻿@model QuanLyBanHangCore.Models.Product
 
 @{
-    ViewData["Title"] = "Sửa thông tin sản phẩm";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>Sửa thông tin</h1>
+<h1>Edit</h1>
 
-<h4>Sản phẩm</h4>
+<h4>Product</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -17,11 +17,6 @@
                 <label asp-for="Ten" class="control-label"></label>
                 <input asp-for="Ten" class="form-control" />
                 <span asp-validation-for="Ten" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gia" class="control-label"></label>
-                <input asp-for="Gia" class="form-control" />
-                <span asp-validation-for="Gia" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SoLuong" class="control-label"></label>
@@ -39,24 +34,15 @@
                 <span asp-validation-for="CategoryID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Lưu" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Trở về danh sách</a>
+    <a asp-action="Index">Back to List</a>
 </div>
-
-@section scriptsRieng
-{
-    <script>
-        $(function () {
-            $('#liSanPham').addClass('nav-item active');
-        });
-    </script>
-}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

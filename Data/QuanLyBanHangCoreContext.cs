@@ -22,5 +22,6 @@ namespace QuanLyBanHangCore.Models
         public DbSet<QuanLyBanHangCore.Models.User> Users { get; set; }
         public DbSet<QuanLyBanHangCore.Models.Order> Orders { get; set; }
         public DbSet<QuanLyBanHangCore.Models.DetailOrder> DetailOrders { get; set; }
+        public DbSet<QuanLyBanHangCore.Models.ProductPrice> ProductPrices { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace QuanLyBanHangCore.Migrations
 {
-    public partial class FullModel : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,7 +27,7 @@ namespace QuanLyBanHangCore.Migrations
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Ten = table.Column<string>(maxLength: 50, nullable: false),
-                    SDT = table.Column<string>(nullable: true)
+                    SDT = table.Column<string>(maxLength: 10, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -66,8 +66,7 @@ namespace QuanLyBanHangCore.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Ten = table.Column<string>(nullable: false),
-                    Gia = table.Column<decimal>(nullable: false),
+                    Ten = table.Column<string>(maxLength: 100, nullable: false),
                     SoLuong = table.Column<int>(nullable: false),
                     ProducerID = table.Column<int>(nullable: false),
                     CategoryID = table.Column<int>(nullable: false)
@@ -97,10 +96,10 @@ namespace QuanLyBanHangCore.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Ten = table.Column<string>(maxLength: 50, nullable: false),
                     GioiTinh = table.Column<string>(maxLength: 5, nullable: false),
-                    SDT = table.Column<string>(nullable: false),
-                    Email = table.Column<string>(nullable: false),
+                    SDT = table.Column<string>(maxLength: 10, nullable: false),
+                    Email = table.Column<string>(maxLength: 50, nullable: false),
                     DiaChi = table.Column<string>(nullable: false),
-                    TaiKhoan = table.Column<string>(nullable: false),
+                    TaiKhoan = table.Column<string>(maxLength: 20, nullable: false),
                     MatKhau = table.Column<string>(nullable: false),
                     RoleID = table.Column<int>(nullable: false)
                 },
@@ -111,6 +110,28 @@ namespace QuanLyBanHangCore.Migrations
                         name: "FK_Users_Roles_RoleID",
                         column: x => x.RoleID,
                         principalTable: "Roles",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductPrices",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Gia = table.Column<decimal>(nullable: false),
+                    TGBD = table.Column<DateTime>(nullable: false),
+                    TGKT = table.Column<DateTime>(nullable: false),
+                    ProductID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductPrices", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_ProductPrices_Products_ProductID",
+                        column: x => x.ProductID,
+                        principalTable: "Products",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -148,7 +169,6 @@ namespace QuanLyBanHangCore.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Gia = table.Column<decimal>(nullable: false),
                     SoLuong = table.Column<int>(nullable: false),
                     OrderID = table.Column<int>(nullable: false),
                     ProductID = table.Column<int>(nullable: false)
@@ -191,6 +211,11 @@ namespace QuanLyBanHangCore.Migrations
                 column: "UserID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductPrices_ProductID",
+                table: "ProductPrices",
+                column: "ProductID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryID",
                 table: "Products",
                 column: "CategoryID");
@@ -210,6 +235,9 @@ namespace QuanLyBanHangCore.Migrations
         {
             migrationBuilder.DropTable(
                 name: "DetailOrders");
+
+            migrationBuilder.DropTable(
+                name: "ProductPrices");
 
             migrationBuilder.DropTable(
                 name: "Orders");

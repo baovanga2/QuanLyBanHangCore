@@ -32,10 +32,11 @@ namespace QuanLyBanHangCore.Controllers
             {
                 return NotFound();
             }
-
             var product = await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Producer)
+                .Include(p => p.ProductPrices)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (product == null)
             {
@@ -58,7 +59,7 @@ namespace QuanLyBanHangCore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Ten,Gia,SoLuong,ProducerID,CategoryID")] Product product)
+        public async Task<IActionResult> Create([Bind("ID,Ten,SoLuong,ProducerID,CategoryID")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -94,7 +95,7 @@ namespace QuanLyBanHangCore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Ten,Gia,SoLuong,ProducerID,CategoryID")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Ten,SoLuong,ProducerID,CategoryID")] Product product)
         {
             if (id != product.ID)
             {
