@@ -1,0 +1,19 @@
+﻿@model string
+
+@{ 
+    string n = "";
+    if (Model == "LSP")
+    {
+        n = "#liLSP";
+    }
+    if (Model == "NSX")
+    {
+        n = "#liNSX";
+    }
+}
+
+<script>
+        $(function () {
+            $('@n').addClass('nav-item active');
+        });
+</script>

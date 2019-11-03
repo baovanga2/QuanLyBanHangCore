@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
@@ -57,8 +58,14 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (ProducerExists(0 ,producer.Ten))
+                {
+                    ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
+                    return View(producer);
+                }
                 _context.Add(producer);
                 await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"\"{producer.Ten}\" đã được thêm.";
                 return RedirectToAction(nameof(Index));
             }
             return View(producer);
@@ -96,8 +103,14 @@ namespace QuanLyBanHangCore.Controllers
             {
                 try
                 {
+                    if (ProducerExists(id, producer.Ten))
+                    {
+                        ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
+                        return View(producer);
+                    }
                     _context.Update(producer);
                     await _context.SaveChangesAsync();
+                    TempData["messageSuccess"] = $"\"{producer.Ten}\" đã được cập nhật.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -141,12 +154,18 @@ namespace QuanLyBanHangCore.Controllers
             var producer = await _context.Producers.FindAsync(id);
             _context.Producers.Remove(producer);
             await _context.SaveChangesAsync();
+            TempData["messageSuccess"] = $"\"{producer.Ten}\" đã được xóa.";
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProducerExists(int id)
         {
             return _context.Producers.Any(e => e.ID == id);
+        }
+
+        private bool ProducerExists(int id, string ten)
+        {
+            return _context.Producers.Any(p => p.Ten == ten && p.ID != id);
         }
     }
 }

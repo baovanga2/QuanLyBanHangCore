@@ -26,11 +26,9 @@
     </form>
 </div>
 
-@section scriptsRieng
+@section Scripts
 {
-    <script>
-        $(function () {
-            $('#liNSX').addClass('nav-item active');
-        });
-    </script>
+    @{ 
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "NSX");
+    }
 }

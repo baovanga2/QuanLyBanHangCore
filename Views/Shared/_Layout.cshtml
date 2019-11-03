@@ -18,7 +18,7 @@
     <!-- Custom styles for this template-->
     <link href="~/mystyle/css/sb-admin-2.min.css" rel="stylesheet" />
 
-    @RenderSection("stylesRieng", required: false)
+    @RenderSection("Styles", required: false)
 </head>
 
 <body id="page-top">
@@ -129,10 +129,13 @@
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
                     <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    @*<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
-                    </button>
-
+                    </button>*@
+                    @if (TempData["messageSuccess"] != null)
+                    {
+                        <div class="alert alert-success m-auto">@TempData["messageSuccess"]</div>
+                    }
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -227,7 +230,6 @@
     <!-- Custom scripts for all pages-->
     <script src="~/mystyle/js/sb-admin-2.min.js"></script>
 
-    @RenderSection("scriptsRieng", required: false)
     @RenderSection("Scripts", required: false)
         
 </body>

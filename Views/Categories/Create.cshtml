@@ -18,7 +18,7 @@
                 <span asp-validation-for="Ten" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Tạo" class="btn btn-primary" />
+                <input type="submit" value="Thêm" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -28,15 +28,9 @@
     <a asp-action="Index">Trở về danh sách</a>
 </div>
 
-@section scriptsRieng
-{
-    <script>
-        $(function () {
-            $('#liLSP').addClass('nav-item active');
-        });
-    </script>
-}
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "LSP");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

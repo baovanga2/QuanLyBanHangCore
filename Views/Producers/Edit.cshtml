@@ -29,15 +29,9 @@
     <a asp-action="Index">Trở về danh sách</a>
 </div>
 
-@section scriptsRieng
-{
-    <script>
-        $(function () {
-            $('#liNSX').addClass('nav-item active');
-        });
-    </script>
-}
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "NSX");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

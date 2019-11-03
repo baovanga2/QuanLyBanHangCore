@@ -21,7 +21,7 @@ namespace QuanLyBanHangCore.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categies.ToListAsync());
+            return View(await _context.Categories.ToListAsync());
         }
 
         // GET: Categories/Details/5
@@ -32,7 +32,7 @@ namespace QuanLyBanHangCore.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categies
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (category == null)
             {
@@ -57,8 +57,14 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (CategoryExists(0, category.Ten))
+                {
+                    ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
+                    return View(category);
+                }
                 _context.Add(category);
                 await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"\"{category.Ten}\" đã được thêm.";
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
@@ -72,7 +78,7 @@ namespace QuanLyBanHangCore.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categies.FindAsync(id);
+            var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -96,8 +102,14 @@ namespace QuanLyBanHangCore.Controllers
             {
                 try
                 {
+                    if (CategoryExists(id, category.Ten))
+                    {
+                        ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
+                        return View(category);
+                    }
                     _context.Update(category);
                     await _context.SaveChangesAsync();
+                    TempData["messageSuccess"] = $"\"{category.Ten}\" đã được cập nhật.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -123,7 +135,7 @@ namespace QuanLyBanHangCore.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categies
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (category == null)
             {
@@ -138,15 +150,21 @@ namespace QuanLyBanHangCore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categies.FindAsync(id);
-            _context.Categies.Remove(category);
+            var category = await _context.Categories.FindAsync(id);
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
+            TempData["messageSuccess"] = $"\"{category.Ten}\" đã được xóa.";
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(int id)
         {
-            return _context.Categies.Any(e => e.ID == id);
+            return _context.Categories.Any(e => e.ID == id);
+        }
+
+        private bool CategoryExists(int id, string ten)
+        {
+            return _context.Categories.Any(c => c.Ten == ten && c.ID != id);
         }
     }
 }

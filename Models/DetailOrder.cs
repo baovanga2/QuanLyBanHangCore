@@ -8,8 +8,9 @@ namespace QuanLyBanHangCore.Models
 {
     public class DetailOrder
     {
-        public int ID { get; set; }
-                
+        [Display(Name = "Giá")]
+        public ulong Gia { get; set; }
+
         [Display(Name = "Số lượng")]
         public ushort SoLuong { get; set; }
 

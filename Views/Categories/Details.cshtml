@@ -23,11 +23,9 @@
     <a asp-action="Index">Trở về danh sách</a>
 </div>
 
-@section scriptsRieng
+@section Scripts
 {
-    <script>
-        $(function () {
-            $('#liLSP').addClass('nav-item active');
-        });
-    </script>
+    @{
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "LSP");
+    }
 }

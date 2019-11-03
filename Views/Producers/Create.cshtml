@@ -1,7 +1,7 @@
 ﻿@model QuanLyBanHangCore.Models.Producer
 
 @{
-    ViewData["Title"] = "Tạo nhà sản xuất";
+    ViewData["Title"] = "Thêm nhà sản xuất";
 }
 
 <h1>Thêm</h1>
@@ -28,15 +28,9 @@
     <a asp-action="Index">Trở về danh sách</a>
 </div>
 
-@section scriptsRieng
-{
-    <script>
-        $(function () {
-            $('#liNSX').addClass('nav-item active');
-        });
-    </script>
-}
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "NSX");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

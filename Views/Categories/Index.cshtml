@@ -4,10 +4,11 @@
     ViewData["Title"] = "Quản lý loại sản phẩm";
 }
 
-@section stylesRieng
+@section Styles
 {
-    <!-- Custom styles for this page -->
-    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    @{
+        await Html.RenderPartialAsync("ThuVienBangStylespartial.cshtml");
+    }
 }
 
 <p>
@@ -16,7 +17,7 @@
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Danh sách loại sản phẩm</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách nhà sản xuất</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -49,17 +50,10 @@
     </div>
 </div>
 
-@section scriptsRieng
+@section Scripts
 {
-    <!-- Page level plugins -->
-    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
-    <script src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="~/mystyle/js/demo/datatables-demo.js"></script>
-    <script>
-        $(function () {
-            $('#liLSP').addClass('nav-item active');
-        });
-    </script>
+    @{
+        await Html.RenderPartialAsync("ThuVienBangScriptsPartial.cshtml");
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "LSP");
+    }
 }

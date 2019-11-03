@@ -11,7 +11,6 @@ namespace QuanLyBanHangCore.Models
         public int ID { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập tên!")]
-        [Index]
         [MaxLength(20)]
         [Display(Name = "Tên")]
         public string Ten { get; set; }

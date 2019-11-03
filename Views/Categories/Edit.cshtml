@@ -1,10 +1,10 @@
 ﻿@model QuanLyBanHangCore.Models.Category
 
 @{
-    ViewData["Title"] = "Sửa thông tin loại sản phẩm";
+    ViewData["Title"] = "Sửa loại sản phẩm";
 }
 
-<h1>Sửa thông tin</h1>
+<h1>Sửa</h1>
 
 <h4>Loại sản phẩm</h4>
 <hr />
@@ -29,15 +29,9 @@
     <a asp-action="Index">Trở về danh sách</a>
 </div>
 
-@section scriptsRieng
-{
-    <script>
-        $(function () {
-            $('#liLSP').addClass('nav-item active');
-        });
-    </script>
-}
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "LSP");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
