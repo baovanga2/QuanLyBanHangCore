@@ -32,11 +32,9 @@
     </form>
 </div>
 
-@section scriptsRieng
+@section Scripts
 {
-    <script>
-        $(function () {
-            $('#liKhachHang').addClass('nav-item active');
-        });
-    </script>
+    @{ 
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "KH");
+    }
 }

@@ -57,8 +57,14 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (CustomerExists(0 , customer.Ten, customer.SDT))
+                {
+                    ModelState.AddModelError("", "Khách hàng đã tồn tại.");
+                    return View(customer);
+                }
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"\"{customer.Ten}\" đã được thêm.";
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
@@ -96,8 +102,14 @@ namespace QuanLyBanHangCore.Controllers
             {
                 try
                 {
+                    if (CustomerExists(id, customer.Ten, customer.SDT))
+                    {
+                        ModelState.AddModelError("", "Khách hàng đã tồn tại.");
+                        return View(customer);
+                    }
                     _context.Update(customer);
                     await _context.SaveChangesAsync();
+                    TempData["messageSuccess"] = $"\"{customer.Ten}\" đã được cập nhật.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -141,12 +153,18 @@ namespace QuanLyBanHangCore.Controllers
             var customer = await _context.Customers.FindAsync(id);
             _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();
+            TempData["messageSuccess"] = $"\"{customer.Ten}\" đã được xóa.";
             return RedirectToAction(nameof(Index));
         }
 
         private bool CustomerExists(int id)
         {
             return _context.Customers.Any(e => e.ID == id);
+        }
+
+        private bool CustomerExists(int id, string ten, string sdt)
+        {
+            return _context.Customers.Any(c => c.Ten == ten && c.SDT == sdt && c.ID != id);
         }
     }
 }

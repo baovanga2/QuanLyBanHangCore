@@ -34,15 +34,9 @@
     <a asp-action="Index">Trở về danh sách</a>
 </div>
 
-@section scriptsRieng
-{
-    <script>
-        $(function () {
-            $('#liKhachHang').addClass('nav-item active');
-        });
-    </script>
-}
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "KH");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
