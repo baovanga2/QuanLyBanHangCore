@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using QuanLyBanHangCore.Models;
-using QuanLyBanHangCore.Models.ViewModel;
+using QuanLyBanHangCore.Models.ViewModels;
 
 namespace QuanLyBanHangCore.Controllers
 {

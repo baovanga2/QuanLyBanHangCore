@@ -19,15 +19,13 @@ namespace QuanLyBanHangCore.Models
         [Required(ErrorMessage = "Vui lòng nhập số lượng!")]
         [Display(Name = "Số lượng")]
         public ushort SoLuong { get; set; }
-
-        public int ProducerID { get; set; }
-
-        [Display(Name = "Nhà sản xuất")]
-        public Producer Producer { get; set; }  
         
-        public int CategoryID { get; set; }
+        [Display(Name = "Nhà sản xuất")]
+        public int ProducerID { get; set; }
+        public Producer Producer { get; set; }
 
         [Display(Name = "Loại")]
+        public int CategoryID { get; set; }
         public Category Category { get; set; }
 
         public List<DetailOrder> DetailOrders { get; set; }

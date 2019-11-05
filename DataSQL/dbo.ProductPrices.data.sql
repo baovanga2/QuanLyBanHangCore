@@ -1,5 +1,5 @@
 ﻿insert into ProductPrices(ProductID, Gia, TGBD, TGKT) values (1,13500000,'2019-1-1','9999-1-1')
-update ProductPrices set TGKT = '2019-2-1' where ID = 1
+update ProductPrices set TGKT = '2019-2-1' where ID = 2
 insert into ProductPrices(ProductID, Gia, TGBD, TGKT) values (1,13000000,'2019-2-1','9999-1-1')
 
 insert into ProductPrices(ProductID, Gia, TGBD, TGKT) values (2,22200000,'2019-1-1','9999-1-1')

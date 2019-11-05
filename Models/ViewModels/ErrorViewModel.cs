@@ -1,6 +1,6 @@
 using System;
 
-namespace QuanLyBanHangCore.Models.ViewModel
+namespace QuanLyBanHangCore.Models.ViewModels
 {
     public class ErrorViewModel
     {

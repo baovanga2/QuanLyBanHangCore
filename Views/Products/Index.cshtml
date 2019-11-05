@@ -1,0 +1,83 @@
+﻿@model IEnumerable<ProductWithCurrentPrice>
+
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+}
+
+@section Styles
+{
+    @{
+        await Html.RenderPartialAsync("ThuVienBangStylespartial.cshtml");
+    }
+}
+
+<p>
+    <a asp-action="Create" class="btn cur-p btn-outline-primary">Thêm mới</a>
+</p>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách sản phẩm</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="w-25">
+                            @Html.DisplayNameFor(model => model.Product.Ten)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Gia)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Product.SoLuong)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Product.Producer)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Product.Category)
+                        </th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Product.Ten)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Gia)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Product.SoLuong)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Product.Producer.Ten)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Product.Category.Ten)
+                            </td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Product.ID" class="btn btn-sm btn-primary"><i class="fas fa-tools"></i></a> |
+                                <a asp-action="Details" asp-route-id="@item.Product.ID" class="btn btn-sm btn-primary"><i class="fas fa-list"></i></a> |
+                                <a asp-action="Delete" asp-route-id="@item.Product.ID" class="btn btn-sm btn-primary"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("ThuVienBangScriptsPartial.cshtml");
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "SP");
+    }
+}
