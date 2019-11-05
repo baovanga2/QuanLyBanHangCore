@@ -49,8 +49,14 @@ namespace QuanLyBanHangCore.Controllers
             {
                 return NotFound();
             }
+            DateTime dateTimeNow = DateTime.Now;
+            List<ProductPrice> productPrices = _context.ProductPrices.Where(pp => pp.ProductID == id).OrderByDescending(pp => pp.TGKT).ToList();
 
-            return View(product);
+            ProductPrice productPrice = productPrices.First(pp => pp.TGKT > dateTimeNow);
+
+            ProductWithPriceList productWithPriceList = new ProductWithPriceList { Product = product, Gia = productPrice.Gia,ProductPrices = productPrices };
+
+            return View(productWithPriceList);
         }
 
         // GET: Products/Create
@@ -60,24 +66,6 @@ namespace QuanLyBanHangCore.Controllers
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten");
             return View();
         }
-
-        // POST: Products/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("ID,Ten,SoLuong,ProducerID,CategoryID")] Product product)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(product);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", product.CategoryID);
-        //    ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten", product.ProducerID);
-        //    return View(product);
-        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -97,6 +85,7 @@ namespace QuanLyBanHangCore.Controllers
                 };
                 _context.Add(productPrice);
                 await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"{productWithCurrentPrice.Product.Ten} đã được thêm";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.Product.CategoryID);
@@ -161,6 +150,7 @@ namespace QuanLyBanHangCore.Controllers
                         productPrice.TGKT = dateTimeNow;
                         _context.Update(productPrice);
                         await _context.SaveChangesAsync();
+                        TempData["messageSuccess"] = $"{productWithCurrentPrice.Product.Ten} đã được cập nhật";
                     }
                 }
                 catch (DbUpdateConcurrencyException)
