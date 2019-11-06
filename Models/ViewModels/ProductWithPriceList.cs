@@ -10,6 +10,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
     {
         public Product Product { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:### ### ### ###}", ApplyFormatInEditMode = false)]
         [Display(Name = "Giá")]
         public ulong Gia { get; set; }
 

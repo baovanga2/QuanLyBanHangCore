@@ -21,7 +21,7 @@ namespace QuanLyBanHangCore.Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Customers.ToListAsync());
+            return View(await _context.Customers.AsNoTracking().ToListAsync());
         }
 
         // GET: Customers/Details/5
@@ -33,6 +33,7 @@ namespace QuanLyBanHangCore.Controllers
             }
 
             var customer = await _context.Customers
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (customer == null)
             {

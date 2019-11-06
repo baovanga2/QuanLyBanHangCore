@@ -22,7 +22,7 @@ namespace QuanLyBanHangCore.Controllers
         // GET: Producers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Producers.ToListAsync());
+            return View(await _context.Producers.AsNoTracking().ToListAsync());
         }
 
         // GET: Producers/Details/5
@@ -34,6 +34,7 @@ namespace QuanLyBanHangCore.Controllers
             }
 
             var producer = await _context.Producers
+                .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (producer == null)
             {
