@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace QuanLyBanHangCore
 {
@@ -29,6 +30,9 @@ namespace QuanLyBanHangCore
 
             services.AddDbContext<QuanLyBanHangCoreContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("QuanLyBanHangCoreContext")));
+            services.AddIdentity<User, IdentityRole<int>>()
+                .AddEntityFrameworkStores<QuanLyBanHangCoreContext>()
+                .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,7 +53,7 @@ namespace QuanLyBanHangCore
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,14 +8,17 @@ using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Models
 {
-    public class User
+    public class User : IdentityUser<int>
     {
-        public int ID { get; set; }
-
         [Required(ErrorMessage = "Vui lòng nhập tên!")]
         [MaxLength(50)]
         [Display(Name = "Tên")]
         public string Ten { get; set; }
+
+        [Required(ErrorMessage = "Vui lòng nhập ngày sinh!")]
+        [DataType(DataType.Date)]
+        [Display(Name = "Ngày sinh")]
+        public DateTime NgaySinh { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập giới tính!")]
         [MaxLength(5)]
@@ -30,26 +34,26 @@ namespace QuanLyBanHangCore.Models
         [Required(ErrorMessage = "Vui lòng nhập email!")]
         [MaxLength(50)]
         [EmailAddress(ErrorMessage = "Email không hợp lệ!")]
-        public string Email { get; set; }
+        public override string Email { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập địa chỉ!")]
         [Display(Name = "Địa chỉ")]
         public string DiaChi { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng nhập tài khoản!")]
-        [Display(Name = "Tài khoản")]
-        [MaxLength(20)]
-        public string TaiKhoan { get; set; }
+        //[Required(ErrorMessage = "Vui lòng nhập tài khoản!")]
+        //[Display(Name = "Tài khoản")]
+        //[MaxLength(20)]
+        //public string TaiKhoan { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng nhập mật khẩu!")]
-        [DataType(DataType.Password)]
-        [Display(Name = "Mật khẩu")]
-        public string MatKhau { get; set; }
+        //[Required(ErrorMessage = "Vui lòng nhập mật khẩu!")]
+        //[DataType(DataType.Password)]
+        //[Display(Name = "Mật khẩu")]
+        //public string MatKhau { get; set; }
 
-        [Display(Name = "Quyền hạn")]
-        public int RoleID { get; set; }
+        //[Display(Name = "Quyền hạn")]
+        //public int RoleID { get; set; }
 
-        public Role Role { get; set; }
+        //public Role Role { get; set; }
 
         public List<Order> Orders { get; set; }
     }

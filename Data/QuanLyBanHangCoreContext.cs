@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
 
 namespace QuanLyBanHangCore.Models
 {
-    public class QuanLyBanHangCoreContext : DbContext
+    public class QuanLyBanHangCoreContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public QuanLyBanHangCoreContext (DbContextOptions<QuanLyBanHangCoreContext> options)
             : base(options)
@@ -18,14 +20,13 @@ namespace QuanLyBanHangCore.Models
         public DbSet<QuanLyBanHangCore.Models.Producer> Producers { get; set; }
         public DbSet<QuanLyBanHangCore.Models.Category> Categories { get; set; }
         public DbSet<QuanLyBanHangCore.Models.Customer> Customers { get; set; }
-        public DbSet<QuanLyBanHangCore.Models.Role> Roles { get; set; }
-        public DbSet<QuanLyBanHangCore.Models.User> Users { get; set; }
         public DbSet<QuanLyBanHangCore.Models.Order> Orders { get; set; }
         public DbSet<QuanLyBanHangCore.Models.DetailOrder> DetailOrders { get; set; }
         public DbSet<QuanLyBanHangCore.Models.ProductPrice> ProductPrices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<DetailOrder>()
                 .HasKey(d => new { d.OrderID, d.ProductID });
         }

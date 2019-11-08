@@ -44,19 +44,19 @@ namespace QuanLyBanHangCore.Controllers
             return View(createdUser);
         }
 
-        private bool UserExists(int id)
-        {
-            return _context.Users.Any(e => e.ID == id);
-        }
+        //private bool UserExists(int id)
+        //{
+        //    return _context.Users.Any(e => e.ID == id);
+        //}
 
-        private bool UserExists(int id, string ten, string sdt)
-        {
-            return _context.Users.Any(c => c.Ten == ten && c.SDT == sdt && c.ID != id);
-        }
+        //private bool UserExists(int id, string ten, string sdt)
+        //{
+        //    return _context.Users.Any(c => c.Ten == ten && c.SDT == sdt && c.ID != id);
+        //}
 
-        private bool TaiKhoanTonTai(string taiKhoan)
-        {
-            return _context.Users.Any(u => u.TaiKhoan == taiKhoan);
-        }
+        //private bool TaiKhoanTonTai(string taiKhoan)
+        //{
+        //    return _context.Users.Any(u => u.TaiKhoan == taiKhoan);
+        //}
     }
 }
