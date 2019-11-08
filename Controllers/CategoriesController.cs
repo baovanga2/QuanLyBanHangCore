@@ -58,15 +58,14 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (CategoryExists(0, category.Ten))
+                if (!CategoryExists(0, category.Ten))
                 {
-                    ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
-                    return View(category);
+                    _context.Add(category);
+                    await _context.SaveChangesAsync();
+                    TempData["messageSuccess"] = $"\"{category.Ten}\" đã được thêm.";
+                    return RedirectToAction(nameof(Index));
                 }
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                TempData["messageSuccess"] = $"\"{category.Ten}\" đã được thêm.";
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
             }
             return View(category);
         }
@@ -101,29 +100,28 @@ namespace QuanLyBanHangCore.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                if (!CategoryExists(id, category.Ten))
                 {
-                    if (CategoryExists(id, category.Ten))
+                    try
                     {
-                        ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
-                        return View(category);
+                        _context.Update(category);
+                        await _context.SaveChangesAsync();
+                        TempData["messageSuccess"] = $"\"{category.Ten}\" đã được cập nhật.";
                     }
-                    _context.Update(category);
-                    await _context.SaveChangesAsync();
-                    TempData["messageSuccess"] = $"\"{category.Ten}\" đã được cập nhật.";
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!CategoryExists(category.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("Ten", "Tên đã được sử dụng.");  
             }
             return View(category);
         }

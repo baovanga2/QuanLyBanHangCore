@@ -58,15 +58,14 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (CustomerExists(0 , customer.Ten, customer.SDT))
+                if (!CustomerExists(0 , customer.Ten, customer.SDT))
                 {
-                    ModelState.AddModelError("", "Khách hàng đã tồn tại.");
-                    return View(customer);
+                    _context.Add(customer);
+                    await _context.SaveChangesAsync();
+                    TempData["messageSuccess"] = $"\"{customer.Ten}\" đã được thêm.";
+                    return RedirectToAction(nameof(Index));
                 }
-                _context.Add(customer);
-                await _context.SaveChangesAsync();
-                TempData["messageSuccess"] = $"\"{customer.Ten}\" đã được thêm.";
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", "Khách hàng đã tồn tại.");
             }
             return View(customer);
         }
@@ -101,29 +100,28 @@ namespace QuanLyBanHangCore.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                if (!CustomerExists(id, customer.Ten, customer.SDT))
                 {
-                    if (CustomerExists(id, customer.Ten, customer.SDT))
+                    try
                     {
-                        ModelState.AddModelError("", "Khách hàng đã tồn tại.");
-                        return View(customer);
+                        _context.Update(customer);
+                        await _context.SaveChangesAsync();
+                        TempData["messageSuccess"] = $"\"{customer.Ten}\" đã được cập nhật.";
                     }
-                    _context.Update(customer);
-                    await _context.SaveChangesAsync();
-                    TempData["messageSuccess"] = $"\"{customer.Ten}\" đã được cập nhật.";
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!CustomerExists(customer.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CustomerExists(customer.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", "Khách hàng đã tồn tại.");
             }
             return View(customer);
         }

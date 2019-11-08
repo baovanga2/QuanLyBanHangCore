@@ -59,15 +59,14 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (ProducerExists(0 ,producer.Ten))
-                {
-                    ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
-                    return View(producer);
+                if (!ProducerExists(0 ,producer.Ten))
+                { 
+                    _context.Add(producer);
+                    await _context.SaveChangesAsync();
+                    TempData["messageSuccess"] = $"\"{producer.Ten}\" đã được thêm.";
+                    return RedirectToAction(nameof(Index));
                 }
-                _context.Add(producer);
-                await _context.SaveChangesAsync();
-                TempData["messageSuccess"] = $"\"{producer.Ten}\" đã được thêm.";
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
             }
             return View(producer);
         }
@@ -102,29 +101,28 @@ namespace QuanLyBanHangCore.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                if (!ProducerExists(id, producer.Ten))
                 {
-                    if (ProducerExists(id, producer.Ten))
+                    try
                     {
-                        ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
-                        return View(producer);
+                        _context.Update(producer);
+                        await _context.SaveChangesAsync();
+                        TempData["messageSuccess"] = $"\"{producer.Ten}\" đã được cập nhật.";
                     }
-                    _context.Update(producer);
-                    await _context.SaveChangesAsync();
-                    TempData["messageSuccess"] = $"\"{producer.Ten}\" đã được cập nhật.";
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        if (!ProducerExists(producer.ID))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProducerExists(producer.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
             }
             return View(producer);
         }
