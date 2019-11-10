@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Controllers
 {
@@ -51,7 +47,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // POST: Producers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -59,14 +55,10 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!ProducerExists(0 ,producer.Ten))
-                { 
-                    _context.Add(producer);
-                    await _context.SaveChangesAsync();
-                    TempData["messageSuccess"] = $"\"{producer.Ten}\" đã được thêm.";
-                    return RedirectToAction(nameof(Index));
-                }
-                ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
+                _context.Add(producer);
+                await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"Nhà sản xuất \"{producer.Ten}\" đã được thêm.";
+                return RedirectToAction("Details", "Producers", new { id = producer.ID });
             }
             return View(producer);
         }
@@ -88,7 +80,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // POST: Producers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -101,28 +93,24 @@ namespace QuanLyBanHangCore.Controllers
 
             if (ModelState.IsValid)
             {
-                if (!ProducerExists(id, producer.Ten))
+                try
                 {
-                    try
-                    {
-                        _context.Update(producer);
-                        await _context.SaveChangesAsync();
-                        TempData["messageSuccess"] = $"\"{producer.Ten}\" đã được cập nhật.";
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!ProducerExists(producer.ID))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                    return RedirectToAction(nameof(Index));
+                    _context.Update(producer);
+                    await _context.SaveChangesAsync();
+                    TempData["messageSuccess"] = $"Nhà sản xuất \"{producer.Ten}\" đã được cập nhật.";
                 }
-                ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProducerExists(producer.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Details", "Producers", new { id = producer.ID });
             }
             return View(producer);
         }
@@ -151,10 +139,15 @@ namespace QuanLyBanHangCore.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var producer = await _context.Producers.FindAsync(id);
-            _context.Producers.Remove(producer);
-            await _context.SaveChangesAsync();
-            TempData["messageSuccess"] = $"\"{producer.Ten}\" đã được xóa.";
-            return RedirectToAction(nameof(Index));
+            if (!_context.Products.Any(p => p.ProducerID == id))
+            {
+                _context.Producers.Remove(producer);
+                await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"Nhà sản xuất \"{producer.Ten}\" đã được xóa.";
+                return RedirectToAction(nameof(Index));
+            }
+            ModelState.AddModelError(string.Empty, "Vì có sản phẩm thuộc nhà sản xuất này nên không thể xóa nó, chỉ có thể xóa nó khi không có sản phẩm thuộc nó!");
+            return View(producer);
         }
 
         private bool ProducerExists(int id)
@@ -162,9 +155,15 @@ namespace QuanLyBanHangCore.Controllers
             return _context.Producers.Any(e => e.ID == id);
         }
 
-        private bool ProducerExists(int id, string ten)
+        [AcceptVerbs("Get", "Post")]
+        public async Task<IActionResult> IsProducerNameExists(string ten, int id)
         {
-            return _context.Producers.Any(p => p.Ten == ten && p.ID != id);
+            var producer = await _context.Producers.FirstOrDefaultAsync(p => p.Ten == ten && p.ID != id);
+            if (producer == null)
+            {
+                return Json(true);
+            }
+            return Json($"Tên nhà sản xuất \"{ten}\" đã được sử dụng!");
         }
     }
 }

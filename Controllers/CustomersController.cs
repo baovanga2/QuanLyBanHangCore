@@ -62,8 +62,8 @@ namespace QuanLyBanHangCore.Controllers
                 {
                     _context.Add(customer);
                     await _context.SaveChangesAsync();
-                    TempData["messageSuccess"] = $"\"{customer.Ten}\" đã được thêm.";
-                    return RedirectToAction(nameof(Index));
+                    TempData["messageSuccess"] = $"Khách hàng \"{customer.Ten}\" đã được thêm.";
+                    return RedirectToAction("Details", "Customers", new { id = customer.ID});
                 }
                 ModelState.AddModelError("", "Khách hàng đã tồn tại.");
             }
@@ -106,7 +106,7 @@ namespace QuanLyBanHangCore.Controllers
                     {
                         _context.Update(customer);
                         await _context.SaveChangesAsync();
-                        TempData["messageSuccess"] = $"\"{customer.Ten}\" đã được cập nhật.";
+                        TempData["messageSuccess"] = $"Khách hàng \"{customer.Ten}\" đã được cập nhật.";
                     }
                     catch (DbUpdateConcurrencyException)
                     {
@@ -119,7 +119,7 @@ namespace QuanLyBanHangCore.Controllers
                             throw;
                         }
                     }
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Details", "Customers", new { id = customer.ID });
                 }
                 ModelState.AddModelError("", "Khách hàng đã tồn tại.");
             }
@@ -150,10 +150,15 @@ namespace QuanLyBanHangCore.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var customer = await _context.Customers.FindAsync(id);
-            _context.Customers.Remove(customer);
-            await _context.SaveChangesAsync();
-            TempData["messageSuccess"] = $"\"{customer.Ten}\" đã được xóa.";
-            return RedirectToAction(nameof(Index));
+            if (!_context.Orders.Any(o => o.CustomerID == id))
+            {
+                _context.Customers.Remove(customer);
+                await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"Khách hàng \"{customer.Ten}\" đã được xóa.";
+                return RedirectToAction(nameof(Index));
+            }
+            ModelState.AddModelError(string.Empty, "Vì có đơn hàng của khách hàng này nên không thể xóa, chỉ có thể xóa khi không có đơn hàng của khách hàng này!");
+            return View(customer);
         }
 
         private bool CustomerExists(int id)

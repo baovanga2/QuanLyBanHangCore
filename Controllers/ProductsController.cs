@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
 using QuanLyBanHangCore.Models.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Controllers
 {
@@ -24,11 +24,22 @@ namespace QuanLyBanHangCore.Controllers
         {
             DateTime dateTimeNow = DateTime.Now;
             var products = await _context.Products.Include(p => p.Category).Include(p => p.Producer).AsNoTracking().ToListAsync();
-            List<ProductWithCurrentPrice> productWithCurrentPrices = new List<ProductWithCurrentPrice>(); 
+            List<ProductWithCurrentPrice> productWithCurrentPrices = new List<ProductWithCurrentPrice>();
             foreach (Product p in products)
             {
                 var productPrice = _context.ProductPrices.AsNoTracking().FirstOrDefault(pp => pp.ProductID == p.ID && pp.TGKT > dateTimeNow);
-                productWithCurrentPrices.Add(new ProductWithCurrentPrice { Product = p , Gia = productPrice.Gia});
+                var productWithCurrentPrice = new ProductWithCurrentPrice
+                {
+                    ID = p.ID,
+                    Ten = p.Ten,
+                    SoLuong = p.SoLuong,
+                    ProducerID = p.ProducerID,
+                    Producer = p.Producer,
+                    CategoryID = p.CategoryID,
+                    Category = p.Category,
+                    Gia = productPrice.Gia
+                };
+                productWithCurrentPrices.Add(productWithCurrentPrice);
             }
             return View(productWithCurrentPrices);
         }
@@ -55,7 +66,7 @@ namespace QuanLyBanHangCore.Controllers
 
             ProductPrice productPrice = productPrices.First(pp => pp.TGKT > dateTimeNow);
 
-            ProductWithPriceList productWithPriceList = new ProductWithPriceList { Product = product, Gia = productPrice.Gia,ProductPrices = productPrices };
+            ProductWithPriceList productWithPriceList = new ProductWithPriceList { Product = product, Gia = productPrice.Gia, ProductPrices = productPrices };
 
             return View(productWithPriceList);
         }
@@ -70,31 +81,35 @@ namespace QuanLyBanHangCore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Product, Gia")] ProductWithCurrentPrice productWithCurrentPrice)
+        public async Task<IActionResult> Create([Bind("ID, Ten, SoLuong, ProducerID, CategoryID, Gia")] ProductWithCurrentPrice productWithCurrentPrice)
         {
             if (ModelState.IsValid)
             {
-                if (!ProductExists(0, productWithCurrentPrice.Product.Ten))
+                DateTime dateTimeNow = DateTime.Now;
+                var product = new Product
                 {
-                    DateTime dateTimeNow = DateTime.Now;
-                    _context.Add(productWithCurrentPrice.Product);
-                    _context.SaveChanges();
-                    ProductPrice productPrice = new ProductPrice
-                    {
-                        Gia = productWithCurrentPrice.Gia,
-                        TGBD = dateTimeNow,
-                        TGKT = DateTime.Parse("9999-1-1"),
-                        ProductID = productWithCurrentPrice.Product.ID
-                    };
-                    _context.Add(productPrice);
-                    await _context.SaveChangesAsync();
-                    TempData["messageSuccess"] = $"\"{productWithCurrentPrice.Product.Ten}\" đã được thêm";
-                    return RedirectToAction(nameof(Index));
-                }
-                ModelState.AddModelError("Product.Ten", "Tên đã được sử dụng");
+                    ID = productWithCurrentPrice.ID,
+                    Ten = productWithCurrentPrice.Ten,
+                    SoLuong = productWithCurrentPrice.SoLuong,
+                    ProducerID = productWithCurrentPrice.ProducerID,
+                    CategoryID = productWithCurrentPrice.CategoryID
+                };
+                _context.Add(product);
+                await _context.SaveChangesAsync();
+                var productPrice = new ProductPrice
+                {
+                    Gia = productWithCurrentPrice.Gia,
+                    TGBD = dateTimeNow,
+                    TGKT = DateTime.Parse("9999-1-1"),
+                    ProductID = product.ID
+                };
+                _context.Add(productPrice);
+                _context.SaveChanges();
+                TempData["messageSuccess"] = $"Sản phẩm \"{productWithCurrentPrice.Ten}\" đã được thêm";
+                return RedirectToAction("Details", "Products", new { id = product.ID });
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.Product.CategoryID);
-            ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.Product.ProducerID);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.CategoryID);
+            ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.ProducerID);
             return View(productWithCurrentPrice);
         }
 
@@ -111,72 +126,79 @@ namespace QuanLyBanHangCore.Controllers
             {
                 return NotFound();
             }
-            var productPrice = _context.ProductPrices.First(pp => pp.ProductID == id && pp.TGKT > dateTimeNow);
+            var productPrice = await _context.ProductPrices.FirstAsync(pp => pp.ProductID == id && pp.TGKT > dateTimeNow);
             ProductWithCurrentPrice productWithCurrentPrice = new ProductWithCurrentPrice
             {
-                Product = product,
+                ID = product.ID,
+                Ten = product.Ten,
+                SoLuong = product.SoLuong,
                 Gia = productPrice.Gia
             };
-            
+
             ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", product.CategoryID);
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten", product.ProducerID);
             return View(productWithCurrentPrice);
         }
 
         // POST: Products/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Product, Gia")] ProductWithCurrentPrice productWithCurrentPrice)
+        public async Task<IActionResult> Edit(int id, [Bind("ID, Ten, SoLuong, ProducerID, CategoryID, Gia")] ProductWithCurrentPrice productWithCurrentPrice)
         {
-            if (id != productWithCurrentPrice.Product.ID)
+            if (id != productWithCurrentPrice.ID)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                if (!ProductExists(id, productWithCurrentPrice.Product.Ten))
+                try
                 {
-                    try
+                    DateTime dateTimeNow = DateTime.Now;
+                    var product = new Product
                     {
-                        DateTime dateTimeNow = DateTime.Now;
-                        _context.Update(productWithCurrentPrice.Product);
-                        ProductPrice productPrice = _context.ProductPrices.First(pp => pp.ProductID == id && pp.TGKT > dateTimeNow);
-                        if (productWithCurrentPrice.Gia != productPrice.Gia)
-                        {
-                            ProductPrice productPriceNew = new ProductPrice
-                            {
-                                Gia = productWithCurrentPrice.Gia,
-                                TGBD = dateTimeNow,
-                                TGKT = DateTime.Parse("9999-1-1"),
-                                ProductID = productWithCurrentPrice.Product.ID
-                            };
-                            _context.Add(productPriceNew);
-                            productPrice.TGKT = dateTimeNow;
-                            _context.Update(productPrice);
-                        }
-                        await _context.SaveChangesAsync();
-                        TempData["messageSuccess"] = $"\"{productWithCurrentPrice.Product.Ten}\" đã được cập nhật";
-                    }
-                    catch (DbUpdateConcurrencyException)
+                        ID = productWithCurrentPrice.ID,
+                        Ten = productWithCurrentPrice.Ten,
+                        SoLuong = productWithCurrentPrice.SoLuong,
+                        ProducerID = productWithCurrentPrice.ProducerID,
+                        CategoryID = productWithCurrentPrice.CategoryID
+                    };
+                    _context.Update(product);
+                    ProductPrice productPrice = _context.ProductPrices.First(pp => pp.ProductID == id && pp.TGKT > dateTimeNow);
+                    if (productWithCurrentPrice.Gia != productPrice.Gia)
                     {
-                        if (!ProductExists(productWithCurrentPrice.Product.ID))
+                        ProductPrice productPriceNew = new ProductPrice
                         {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
+                            Gia = productWithCurrentPrice.Gia,
+                            TGBD = dateTimeNow,
+                            TGKT = DateTime.Parse("9999-1-1"),
+                            ProductID = productWithCurrentPrice.ID
+                        };
+                        _context.Add(productPriceNew);
+                        productPrice.TGKT = dateTimeNow;
+                        _context.Update(productPrice);
                     }
-                    return RedirectToAction(nameof(Index));
+                    await _context.SaveChangesAsync();
+                    TempData["messageSuccess"] = $"Sản phẩm \"{productWithCurrentPrice.Ten}\" đã được cập nhật";
+                    return RedirectToAction("Details", "Products", new { id = productWithCurrentPrice.ID });
                 }
-                ModelState.AddModelError("Product.Ten", "Tên đã được sử dụng");
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ProductExists(productWithCurrentPrice.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.Product.CategoryID);
-            ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.Product.ProducerID);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.CategoryID);
+            ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.ProducerID);
             return View(productWithCurrentPrice);
         }
 
@@ -208,10 +230,15 @@ namespace QuanLyBanHangCore.Controllers
             Product product = await _context.Products
                 .Include(p => p.ProductPrices)
                 .SingleAsync(p => p.ID == id);
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-            TempData["messageSuccess"] = $"\"{product.Ten}\" đã được xóa";
-            return RedirectToAction(nameof(Index));
+            if (!_context.DetailOrders.Any(d => d.ProductID == id))
+            {
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"Sản phẩm \"{product.Ten}\" đã được xóa";
+                return RedirectToAction(nameof(Index));
+            }
+            ModelState.AddModelError(string.Empty, "Vì có đơn hàng có sản phẩm này nên không thể xóa, chỉ có thể xóa khi không có đơn hàng có sản phẩm này!");
+            return View(product);
         }
 
         private bool ProductExists(int id)
@@ -219,9 +246,15 @@ namespace QuanLyBanHangCore.Controllers
             return _context.Products.Any(e => e.ID == id);
         }
 
-        private bool ProductExists(int id, string ten)
+        [AcceptVerbs("Get", "Post")]
+        public async Task<IActionResult> IsProductNameExists(string ten, int id)
         {
-            return _context.Products.Any(p => p.Ten == ten && p.ID != id);
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Ten == ten && p.ID != id);
+            if (product == null)
+            {
+                return Json(true);
+            }
+            return Json($"Tên sản phẩm \"{ten}\" đã được sử dụng!");
         }
     }
 }

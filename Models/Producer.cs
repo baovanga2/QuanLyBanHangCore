@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace QuanLyBanHangCore.Models
 
         [Required(ErrorMessage = "Vui lòng nhập tên!")]
         [MaxLength(20)]
+        [Remote(action: "IsProducerNameExists", controller: "Producers", AdditionalFields = nameof(ID))]
         [Display(Name = "Tên")]
         public string Ten { get; set; }
         public List<Product> Products { get; set; }

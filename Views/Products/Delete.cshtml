@@ -1,4 +1,4 @@
-﻿@model QuanLyBanHangCore.Models.Product
+﻿@model Product
 
 @{
     ViewData["Title"] = "Xóa sản phẩm";
@@ -36,7 +36,7 @@
             @Html.DisplayFor(model => model.Category.Ten)
         </dd>
     </dl>
-
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
         <input type="submit" value="Xóa" class="btn btn-danger" /> |

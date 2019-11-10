@@ -1,4 +1,4 @@
-﻿@model QuanLyBanHangCore.Models.ViewModels.CreatedUser
+﻿@model CreateUserViewModel
 @{
     ViewData["Title"] = "Thêm người dùng";
 }
@@ -8,28 +8,18 @@
 <h4>Người dùng</h4>
 <hr />
 <form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="col-md-4">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Ten" class="control-label"></label>
                 <input asp-for="Ten" class="form-control" />
                 <span asp-validation-for="Ten" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="GioiTinh" class="control-label"></label>
-                <div class="form-control-plaintext">
-                    <div class="form-check-inline">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" asp-for="GioiTinh" value="Nam" checked />Nam
-                        </label>
-                    </div>
-                    <div class="form-check-inline">
-                        <label class="form-check-label">
-                            <input type="radio" class="form-check-input" asp-for="GioiTinh" value="Nữ" />Nữ
-                        </label>
-                    </div>
-                </div>
+                <label asp-for="NgaySinh" class="control-label"></label>
+                <input asp-for="NgaySinh" class="form-control" />
+                <span asp-validation-for="NgaySinh" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="SDT" class="control-label"></label>
@@ -49,6 +39,21 @@
         </div>
         <div class="col-md-4">
             <div class="form-group">
+                <label asp-for="GioiTinh" class="control-label"></label>
+                <div class="form-control-plaintext">
+                    <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" asp-for="GioiTinh" value="Nam" checked />Nam
+                        </label>
+                    </div>
+                    <div class="form-check-inline">
+                        <label class="form-check-label">
+                            <input type="radio" class="form-check-input" asp-for="GioiTinh" value="Nữ" />Nữ
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
                 <label asp-for="TaiKhoan" class="control-label"></label>
                 <input asp-for="TaiKhoan" class="form-control" />
                 <span asp-validation-for="TaiKhoan" class="text-danger"></span>
@@ -63,10 +68,10 @@
                 <input asp-for="XacNhanMatKhau" class="form-control" />
                 <span asp-validation-for="XacNhanMatKhau" class=" text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="RoleID" class="control-label"></label>
-                <select asp-for="RoleID" class="form-control" asp-items="ViewBag.RoleID"></select>
-            </div>
+            @*<div class="form-group">
+                    <label asp-for="RoleID" class="control-label"></label>
+                    <select asp-for="RoleID" class="form-control" asp-items="ViewBag.RoleID"></select>
+                </div>*@
             <div class="form-group">
                 <input type="submit" value="Thêm" class="btn btn-primary" />
             </div>
@@ -76,3 +81,10 @@
         </div>
     </div>
 </form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "ND");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

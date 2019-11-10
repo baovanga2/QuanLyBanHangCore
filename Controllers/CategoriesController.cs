@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Controllers
 {
@@ -50,7 +47,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // POST: Categories/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -58,14 +55,10 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!CategoryExists(0, category.Ten))
-                {
-                    _context.Add(category);
-                    await _context.SaveChangesAsync();
-                    TempData["messageSuccess"] = $"\"{category.Ten}\" đã được thêm.";
-                    return RedirectToAction(nameof(Index));
-                }
-                ModelState.AddModelError("Ten", "Tên đã được sử dụng.");
+                _context.Add(category);
+                await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"Loại sản phẩm \"{category.Ten}\" đã được thêm.";
+                return RedirectToAction("Details", "Categories", new { id = category.ID });
             }
             return View(category);
         }
@@ -87,7 +80,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // POST: Categories/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -97,35 +90,30 @@ namespace QuanLyBanHangCore.Controllers
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
-                if (!CategoryExists(id, category.Ten))
+                try
                 {
-                    try
-                    {
-                        _context.Update(category);
-                        await _context.SaveChangesAsync();
-                        TempData["messageSuccess"] = $"\"{category.Ten}\" đã được cập nhật.";
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!CategoryExists(category.ID))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                    return RedirectToAction(nameof(Index));
+                    _context.Update(category);
+                    await _context.SaveChangesAsync();
+                    TempData["messageSuccess"] = $"Loại sản phẩm \"{category.Ten}\" đã được cập nhật.";
                 }
-                ModelState.AddModelError("Ten", "Tên đã được sử dụng.");  
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CategoryExists(category.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Details", "Categories", new { id = category.ID });
             }
             return View(category);
         }
-
+        
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
@@ -150,20 +138,31 @@ namespace QuanLyBanHangCore.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var category = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-            TempData["messageSuccess"] = $"\"{category.Ten}\" đã được xóa.";
-            return RedirectToAction(nameof(Index));
+            if (!_context.Products.Any(p => p.CategoryID == id))
+            {
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"Loại sản phẩm \"{category.Ten}\" đã được xóa.";
+                return RedirectToAction(nameof(Index));
+            }
+            ModelState.AddModelError(string.Empty, "Vì có sản phẩm thuộc loại sản phẩm này nên không thể xóa nó, chỉ có thể xóa nó khi không có sản phẩm thuộc nó!");
+            return View(category);
         }
 
         private bool CategoryExists(int id)
         {
             return _context.Categories.Any(e => e.ID == id);
         }
-
-        private bool CategoryExists(int id, string ten)
+                
+        [AcceptVerbs("Get", "Post")]
+        public async Task<IActionResult> IsCategoryNameExists(string ten, int id)
         {
-            return _context.Categories.Any(c => c.Ten == ten && c.ID != id);
+            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Ten == ten && c.ID != id);
+            if (category == null)
+            {
+                return Json(true);
+            }
+            return Json($"Tên \"{ten}\" đã được sử dụng!");
         }
     }
 }

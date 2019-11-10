@@ -17,6 +17,7 @@ namespace QuanLyBanHangCore.Models
 
         [Required(ErrorMessage = "Vui lòng nhập ngày sinh!")]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Ngày sinh")]
         public DateTime NgaySinh { get; set; }
 
@@ -39,16 +40,6 @@ namespace QuanLyBanHangCore.Models
         [Required(ErrorMessage = "Vui lòng nhập địa chỉ!")]
         [Display(Name = "Địa chỉ")]
         public string DiaChi { get; set; }
-
-        //[Required(ErrorMessage = "Vui lòng nhập tài khoản!")]
-        //[Display(Name = "Tài khoản")]
-        //[MaxLength(20)]
-        //public string TaiKhoan { get; set; }
-
-        //[Required(ErrorMessage = "Vui lòng nhập mật khẩu!")]
-        //[DataType(DataType.Password)]
-        //[Display(Name = "Mật khẩu")]
-        //public string MatKhau { get; set; }
 
         //[Display(Name = "Quyền hạn")]
         //public int RoleID { get; set; }

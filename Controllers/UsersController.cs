@@ -26,28 +26,26 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         public IActionResult Create()
-        {
-            ViewData["RoleID"] = new SelectList(_context.Roles, "ID", "Ten");
+        {            
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("ID, Ten, GioiTinh, SDT, Email, DiaChi, TaiKhoan, MatKhau, XacNhanMatKhau, RoleID")] CreatedUser createdUser)
+        public IActionResult Create([Bind("ID, Ten, GioiTinh, SDT, Email, DiaChi, TaiKhoan, MatKhau, XacNhanMatKhau, RoleID")] CreateUserViewModel createdUser)
         {
             if (ModelState.IsValid)
             {
                 
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["RoleID"] = new SelectList(_context.Roles, "ID", "Ten", createdUser.RoleID);
+            }            
             return View(createdUser);
         }
 
-        //private bool UserExists(int id)
-        //{
-        //    return _context.Users.Any(e => e.ID == id);
-        //}
+        private bool UserExists(int id)
+        {
+            return _context.Users.Any(e => e.Id == id);
+        }
 
         //private bool UserExists(int id, string ten, string sdt)
         //{

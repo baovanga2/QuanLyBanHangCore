@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>@ViewData["Title"] - Gold PC Shop</title>
+    <title>@ViewData["Title"] - PC Shop</title>
 
     <!-- Custom fonts for this template-->
     <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
@@ -27,7 +27,7 @@
     <div id="wrapper">
 
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <div class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" asp-action="index" asp-controller="Home">
@@ -47,55 +47,55 @@
             </div>
 
             <!-- Nav Item - Don hang -->
-            <li class="nav-item">
+            <div class="nav-item">
                 <a class="nav-link" asp-action="index" asp-controller="Categories">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Quản lý đơn hàng</span>
                 </a>
-            </li>
+            </div>
 
             <!-- Nav Item - Khach hang -->
-            <li class="nav-item" id="liKH">
+            <div class="nav-item" id="liKH">
                 <a class="nav-link" asp-action="index" asp-controller="Customers">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Quản lý khách hàng</span>
                 </a>
-            </li>
+            </div>
 
             <!-- Nav Item - San pham -->
-            <li class="nav-item" id="liSP">
+            <div class="nav-item" id="liSP">
                 <a class="nav-link" asp-action="index" asp-controller="Products">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Quản lý sản phẩm</span>
                 </a>
-            </li>
+            </div>
 
             <!-- Nav Item - Nha san xuat -->
-            <li class="nav-item" id="liNSX">
+            <div class="nav-item" id="liNSX">
                 <a class="nav-link" asp-action="index" asp-controller="Producers">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Quản lý nhà sản xuất</span>
                 </a>
-            </li>
+            </div>
 
             <!-- Nav Item - Loai san pham -->
-            <li class="nav-item" id="liLSP">
+            <div class="nav-item" id="liLSP">
                 <a class="nav-link" asp-action="index" asp-controller="Categories">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Quản lý loại sản phẩm</span>
                 </a>
-            </li>
+            </div>
 
             <!-- Nav Item - Nguoi dung -->
-            <li class="nav-item">
-                <a class="nav-link" asp-action="index" asp-controller="Categories">
+            <div class="nav-item" id="liND">
+                <a class="nav-link" asp-action="index" asp-controller="Users">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Quản lý người dùng</span>
                 </a>
-            </li>
+            </div>
 
             <!-- Nav Item - Thong ke -->
-            <li class="nav-item">
+            <div class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Thống kê</span>
@@ -107,7 +107,7 @@
                         <a class="collapse-item" href="cards.html">Thống kê theo khách hàng</a>
                     </div>
                 </div>
-            </li>
+            </div>
 
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
@@ -117,7 +117,7 @@
                 <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
 
-        </ul>
+        </div>
         <!-- End of Sidebar -->
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -128,13 +128,13 @@
                 <!-- Topbar -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                    <!-- Sidebar Toggle (Topbar) -->
+                    <!--Sidebar Toggle (Topbar)-->
                     @*<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>*@
                     @if (TempData["messageSuccess"] != null)
                     {
-                        <div class="alert alert-success m-auto">@TempData["messageSuccess"]</div>
+                    <div class="alert alert-success m-auto">@TempData["messageSuccess"]</div>
                     }
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -162,7 +162,7 @@
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                                    Logout
+                                    Đăng xuất
                                 </a>
                             </div>
                         </li>
@@ -185,7 +185,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2019</span>
+                        <span>Copyright &copy; Vang's Website 2019</span>
                     </div>
                 </div>
             </footer>
@@ -200,21 +200,22 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
-
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="LogoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <h5 class="modal-title" id="LogoutModalLabel">Đăng xuất <i class="fa fa-lock"></i></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-body"><i class="fa fa-question-circle"></i> Bạn có chắc muốn đăng xuất?</div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <button class="btn btn-outline-secondary" type="button" data-dismiss="modal">Hủy</button>
+                    <form method="post" asp-action="Logout" asp-controller="Account">
+                        <input type="submit" class="btn btn-primary" value="Đăng xuất" />
+                    </form>
                 </div>
             </div>
         </div>
