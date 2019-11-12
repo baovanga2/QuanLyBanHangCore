@@ -31,12 +31,7 @@ namespace QuanLyBanHangCore.Models
         [RegularExpression(@"^[0]+[0-9]*$", ErrorMessage = "Số điện thoại bắt đầu bằng số 0 và chỉ chứa chữ số!")]
         [Display(Name = "Số điện thoại")]
         public string SDT { get; set; }
-
-        [Required(ErrorMessage = "Vui lòng nhập email!")]
-        [MaxLength(50)]
-        [EmailAddress(ErrorMessage = "Email không hợp lệ!")]
-        public override string Email { get; set; }
-
+                
         [Required(ErrorMessage = "Vui lòng nhập địa chỉ!")]
         [Display(Name = "Địa chỉ")]
         public string DiaChi { get; set; }

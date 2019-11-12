@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Models.ViewModels
 {
-    public class CreateUserViewModel
+    public class UserEditViewModel
     {
+        public string TaiKhoan { get; set; }
+
         [Required(ErrorMessage = "Vui lòng nhập tên!")]
         [MaxLength(50)]
         [Display(Name = "Tên")]
@@ -13,7 +17,6 @@ namespace QuanLyBanHangCore.Models.ViewModels
 
         [Required(ErrorMessage = "Vui lòng nhập ngày sinh!")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Ngày sinh")]
         public DateTime NgaySinh { get; set; }
 
@@ -36,27 +39,5 @@ namespace QuanLyBanHangCore.Models.ViewModels
         [Required(ErrorMessage = "Vui lòng nhập địa chỉ!")]
         [Display(Name = "Địa chỉ")]
         public string DiaChi { get; set; }
-
-        [Required(ErrorMessage = "Vui lòng nhập tài khoản!")]
-        [Display(Name = "Tài khoản")]
-        [Remote(action: "IsTaiKhoanExists", controller: "Account")]
-        [MaxLength(20)]
-        public string TaiKhoan { get; set; }
-
-        [Required(ErrorMessage = "Vui lòng nhập mật khẩu!")]
-        [DataType(DataType.Password)]
-        [MaxLength(20)]
-        [Display(Name = "Mật khẩu")]
-        public string MatKhau { get; set; }
-
-        [Required(ErrorMessage = "Vui lòng nhập lại mật khẩu!")]
-        [DataType(DataType.Password)]
-        [MaxLength(20)]
-        [Display(Name = "Xác nhận mật khẩu")]
-        [Compare("MatKhau", ErrorMessage = "Mật khẩu và xác nhận mật khẩu không trùng nhau!")]
-        public string XacNhanMatKhau { get; set; }
-
-        //[Display(Name = "Quyền hạn")]
-        //public int RoleID { get; set; }
     }
 }

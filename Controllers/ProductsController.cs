@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
@@ -20,6 +21,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Products
+        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
         public async Task<IActionResult> Index()
         {
             DateTime dateTimeNow = DateTime.Now;
@@ -45,6 +47,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Products/Details/5
+        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -72,6 +75,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Products/Create
+        [Authorize(Roles = "Thủ kho")]
         public IActionResult Create()
         {
             ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten");
@@ -114,6 +118,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Products/Edit/5
+        [Authorize(Roles = "Thủ kho")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -145,6 +150,7 @@ namespace QuanLyBanHangCore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Thủ kho")]
         public async Task<IActionResult> Edit(int id, [Bind("ID, Ten, SoLuong, ProducerID, CategoryID, Gia")] ProductWithCurrentPrice productWithCurrentPrice)
         {
             if (id != productWithCurrentPrice.ID)
@@ -203,6 +209,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize(Roles = "Thủ kho")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -225,6 +232,7 @@ namespace QuanLyBanHangCore.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Thủ kho")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             Product product = await _context.Products

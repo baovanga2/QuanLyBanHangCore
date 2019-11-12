@@ -40,9 +40,24 @@ namespace QuanLyBanHangCore
                 options.Password.RequiredLength = 1;
                 options.Password.RequiredUniqueChars = 1;
 
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 10;
+                options.Lockout.AllowedForNewUsers = true;
+
                 options.User.AllowedUserNameCharacters ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
                 options.User.RequireUniqueEmail = false;
             });
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/Account/AccessDenied";
+                options.Cookie.Name = "QuanLyBanHangCoreAppCookieName";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.LoginPath = "/Account/Login";
+                options.SlidingExpiration = true;
+            });
+
             services.AddRazorPages();
             services.AddMvc(config =>
             {

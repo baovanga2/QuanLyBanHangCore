@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
 using System.Linq;
@@ -16,12 +17,14 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Categories
+        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Categories.AsNoTracking().ToListAsync());
         }
 
         // GET: Categories/Details/5
+        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -41,6 +44,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Categories/Create
+        [Authorize(Roles = "Thủ kho")]
         public IActionResult Create()
         {
             return View();
@@ -51,6 +55,7 @@ namespace QuanLyBanHangCore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Thủ kho")]
         public async Task<IActionResult> Create([Bind("ID,Ten")] Category category)
         {
             if (ModelState.IsValid)
@@ -64,6 +69,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Categories/Edit/5
+        [Authorize(Roles = "Thủ kho")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,6 +90,7 @@ namespace QuanLyBanHangCore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Thủ kho")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Ten")] Category category)
         {
             if (id != category.ID)
@@ -113,8 +120,9 @@ namespace QuanLyBanHangCore.Controllers
             }
             return View(category);
         }
-        
+
         // GET: Categories/Delete/5
+        [Authorize(Roles = "Thủ kho")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,6 +143,7 @@ namespace QuanLyBanHangCore.Controllers
         // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Thủ kho")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var category = await _context.Categories.FindAsync(id);

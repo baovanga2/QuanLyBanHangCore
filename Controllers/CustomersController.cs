@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,12 +20,14 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Customers
+        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Customers.AsNoTracking().ToListAsync());
         }
 
         // GET: Customers/Details/5
+        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,6 +47,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Customers/Create
+        [Authorize(Roles = "Bán hàng")]
         public IActionResult Create()
         {
             return View();
@@ -54,6 +58,7 @@ namespace QuanLyBanHangCore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Bán hàng")]
         public async Task<IActionResult> Create([Bind("ID,Ten,SDT")] Customer customer)
         {
             if (ModelState.IsValid)
@@ -71,6 +76,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Customers/Edit/5
+        [Authorize(Roles = "Bán hàng")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,6 +97,7 @@ namespace QuanLyBanHangCore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Bán hàng")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Ten,SDT")] Customer customer)
         {
             if (id != customer.ID)
@@ -127,6 +134,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Customers/Delete/5
+        [Authorize(Roles = "Bán hàng")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -147,6 +155,7 @@ namespace QuanLyBanHangCore.Controllers
         // POST: Customers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Bán hàng")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var customer = await _context.Customers.FindAsync(id);

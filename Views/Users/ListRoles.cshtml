@@ -1,0 +1,61 @@
+﻿@model List<RoleViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý quyền hạn";
+}
+
+<h1>Danh sách quyền hạn</h1>
+
+<div class="card-deck">
+    @foreach (var role in Model)
+    {
+        <div class="card">
+            <div class="card-header bg-primary text-white text-center">
+                <h3>@role.Ten</h3>
+            </div>
+            <div class="card-body text-center">
+                @if (role.Ten == "Quản trị")
+                {
+                    <img class="card-img-top" src="~/img/quantri.png" height="140" />
+                }
+                @if (role.Ten == "Thủ kho")
+                {
+                    <img class="card-img-top" src="~/img/thukho.png" height="140" />
+                }
+                @if (role.Ten == "Kế toán")
+                {
+                    <img class="card-img-top" src="~/img/ketoan.png" height="140" />
+                }
+                @if (role.Ten == "Bán hàng")
+                {
+                    <img class="card-img-top" src="~/img/banhang.jpg" height="140" />
+                }
+                <hr />
+                <h6 class="card-title">
+                    @if (role.Users.Any())
+                    {
+                        <span>&diams; </span>
+                        foreach (var user in role.Users)
+                        {
+                            <span>@user &diams;</span>
+                        }
+                    }
+                    else
+                    {
+                        <span>Không có vào khoảnh khắc này</span>
+                    }
+                </h6>
+            </div>
+            <div class="card-footer text-center">
+                <a asp-action="EditUsersInRole" asp-controller="Users" asp-route-roleTen="@role.Ten" class="card-link">Thêm hoặc gỡ người dùng</a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "NDQH");
+    }
+}

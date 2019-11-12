@@ -1,0 +1,96 @@
+﻿@model UserEditViewModel
+
+@{
+    ViewData["Title"] = "Sửa người dùng";
+}
+
+<h1>Sửa</h1>
+
+<h4>Người dùng</h4>
+<hr />
+<form asp-action="Edit" asp-controller="Users">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="col-md-4">
+            <input asp-for="TaiKhoan" type="hidden" />
+            <div class="form-group">
+                <label asp-for="Ten" class="control-label"></label>
+                <input asp-for="Ten" class="form-control" />
+                <span asp-validation-for="Ten" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgaySinh" class="control-label"></label>
+                <input asp-for="NgaySinh" class="form-control" />
+                <span asp-validation-for="NgaySinh" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SDT" class="control-label"></label>
+                <input asp-for="SDT" class="form-control" />
+                <span asp-validation-for="SDT" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiaChi" class="control-label"></label>
+                <textarea asp-for="DiaChi" class="form-control"></textarea>
+                <span asp-validation-for="DiaChi" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            @if (Model.GioiTinh == "Nam")
+            {
+                <div class="form-group">
+                    <label asp-for="GioiTinh" class="control-label"></label>
+                    <div class="form-control-plaintext">
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+
+                                <input type="radio" class="form-check-input" asp-for="GioiTinh" value="Nam" checked />Nam
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" asp-for="GioiTinh" value="Nữ" />Nữ
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    <label asp-for="GioiTinh" class="control-label"></label>
+                    <div class="form-control-plaintext">
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+
+                                <input type="radio" class="form-check-input" asp-for="GioiTinh" value="Nam" />Nam
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="radio" class="form-check-input" asp-for="GioiTinh" value="Nữ" checked />Nữ
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="Lưu" class="btn btn-primary" />
+            </div>
+            <div>
+                <a asp-action="Index">Trở về danh sách</a>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "NDND");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

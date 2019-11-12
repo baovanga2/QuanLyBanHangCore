@@ -2,6 +2,8 @@
 
 @{ 
     string n = "";
+    string m = "";
+    string c = "";
     if (Model == "LSP")
     {
         n = "#liLSP";
@@ -18,14 +20,24 @@
     {
         n = "#liSP";
     }
-    if (Model == "ND")
+    if (Model == "NDQH")
     {
         n = "#liND";
+        m = "#liNDQH";
+        c = "#collapseUser";
+    }
+    if (Model == "NDND")
+    {
+        n = "#liND";
+        m = "#liNDND";
+        c = "#collapseUser";
     }
 }
 
 <script>
         $(function () {
-            $('@n').addClass('nav-item active');
+            $('@n').addClass('active');
+            $('@m').addClass('active');
+            $('@c').addClass('show');
         });
 </script>
