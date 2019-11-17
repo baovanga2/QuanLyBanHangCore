@@ -39,8 +39,8 @@
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <form asp-action="Delete">
         <input type="hidden" asp-for="ID" />
-        <input type="submit" value="Xóa" class="btn btn-danger" /> |
-        <a asp-action="Index">Trở về danh sách</a>
+        <button type="submit" class="btn btn-outline-danger"><i class="fas fa-trash-alt"></i> Xóa</button> |
+        <a asp-action="Index"><i class="fas fa-undo-alt"></i> Trở về danh sách</a>
     </form>
 </div>
 

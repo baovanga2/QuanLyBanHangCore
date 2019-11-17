@@ -1,18 +1,17 @@
-﻿@model UserEditViewModel
+﻿@model PersonalEditViewModel
 
 @{
-    ViewData["Title"] = "Cập nhật người dùng";
+    ViewData["Title"] = "Cập nhật thông tin";
 }
 
 <h1>Cập nhật</h1>
 
-<h4>Thông tin người dùng</h4>
+<h4>Thông tin cá nhân</h4>
 <hr />
-<form asp-action="Edit" asp-controller="Users">
+<form asp-action="PersonalEdit" asp-controller="Users">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="col-md-4">
-            <input asp-for="TaiKhoan" type="hidden" />
             <div class="form-group">
                 <label asp-for="Ten" class="control-label"></label>
                 <input asp-for="Ten" class="form-control" />
@@ -82,7 +81,7 @@
                 <button type="submit" class="btn btn-outline-primary"><i class="fas fa-user-edit"></i> Cập nhật</button>
             </div>
             <div>
-                <a asp-action="Index"><i class="fas fa-undo-alt"></i> Trở về danh sách</a>
+                <a asp-action="Index" asp-controller="Home"><i class="fas fa-undo-alt"></i> Trở về trang chủ</a>
             </div>
         </div>
     </div>
@@ -90,7 +89,6 @@
 
 @section Scripts {
     @{
-        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "NDND");
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

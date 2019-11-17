@@ -1,13 +1,13 @@
-﻿@model UserDetailsViewModel
+﻿@model PersonalDetailsViewModel
 
 @{
-    ViewData["Title"] = "Chi tiết người dùng";
+    ViewData["Title"] = "Thông tin cá nhân";
 }
 
-<h1>Chi tiết</h1>
+<h1>Thông tin</h1>
 
 <div>
-    <h4>Người dùng</h4>
+    <h4>Cá nhân</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -71,12 +71,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-taiKhoan="@Model.TaiKhoan"><i class="fas fa-user-edit"></i> Chỉnh sửa</a> | 
-    <a asp-action="Index"> <i class="fas fa-undo-alt"></i> Trở về danh sách</a>
+    <a asp-action="PersonalEdit"><i class="fas fa-user-edit"></i> Chỉnh sửa</a> |
+    <a asp-action="Index" asp-controller="Home"><i class="fas fa-undo-alt"></i> Trở về trang chủ</a>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "NDND");
-    }
-}

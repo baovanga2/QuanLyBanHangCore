@@ -29,7 +29,7 @@ namespace QuanLyBanHangCore.Controllers
             List<ProductWithCurrentPrice> productWithCurrentPrices = new List<ProductWithCurrentPrice>();
             foreach (Product p in products)
             {
-                var productPrice = _context.ProductPrices.AsNoTracking().FirstOrDefault(pp => pp.ProductID == p.ID && pp.TGKT > dateTimeNow);
+                var productPrice = await _context.ProductPrices.AsNoTracking().FirstOrDefaultAsync(pp => pp.ProductID == p.ID && pp.TGKT > dateTimeNow);
                 var productWithCurrentPrice = new ProductWithCurrentPrice
                 {
                     ID = p.ID,

@@ -53,9 +53,15 @@ namespace QuanLyBanHangCore
                 options.AccessDeniedPath = "/Account/AccessDenied";
                 options.Cookie.Name = "QuanLyBanHangCoreAppCookieName";
                 options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
+                options.ExpireTimeSpan = TimeSpan.FromHours(1);
                 options.LoginPath = "/Account/Login";
                 options.SlidingExpiration = true;
+            });
+
+            services.AddDistributedMemoryCache();
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
             });
 
             services.AddRazorPages();
@@ -84,6 +90,7 @@ namespace QuanLyBanHangCore
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseSession();
 
             app.UseRouting();
             app.UseAuthentication();

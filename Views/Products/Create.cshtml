@@ -36,14 +36,14 @@
                 <select asp-for="CategoryID" class ="form-control" asp-items="ViewBag.CategoryID"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Thêm" class="btn btn-primary" />
+                <button type="submit" class="btn btn-outline-primary"><i class="fas fa-plus"></i> Thêm</button>
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Trở về danh sách</a>
+    <a asp-action="Index"><i class="fas fa-undo-alt"></i> Trở về danh sách</a>
 </div>
 
 @section Scripts {

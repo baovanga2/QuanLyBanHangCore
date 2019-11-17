@@ -47,9 +47,9 @@
             </div>
 
             <!-- Nav Item - Don hang -->
-            <div class="nav-item">
-                <a asp-action="index" asp-controller="Categories" class="nav-link">
-                    <i class="fas fa-fw fa-table"></i>
+            <div class="nav-item" id="liDH">
+                <a asp-action="index" asp-controller="Orders" class="nav-link">
+                    <i class="fas fa-fw fa-shopping-cart"></i>
                     <span>Quản lý đơn hàng</span>
                 </a>
             </div>
@@ -57,7 +57,7 @@
             <!-- Nav Item - Khach hang -->
             <div class="nav-item" id="liKH">
                 <a asp-action="index" asp-controller="Customers" class="nav-link">
-                    <i class="fas fa-fw fa-table"></i>
+                    <i class="fas fa-fw fa-handshake"></i>
                     <span>Quản lý khách hàng</span>
                 </a>
             </div>
@@ -65,7 +65,7 @@
             <!-- Nav Item - San pham -->
             <div class="nav-item" id="liSP">
                 <a asp-action="index" asp-controller="Products" class="nav-link">
-                    <i class="fas fa-fw fa-chart-area"></i>
+                    <i class="fas fa-fw fa-box"></i>
                     <span>Quản lý sản phẩm</span>
                 </a>
             </div>
@@ -89,7 +89,7 @@
             <!-- Nav Item - Thong ke -->
             <div class="nav-item">
                 <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
+                    <i class="fas fa-fw fa-dollar-sign"></i>
                     <span>Thống kê</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -105,7 +105,7 @@
                 <!-- Nav Item - Nguoi dung -->
                 <div class="nav-item" id="liND">
                     <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseUser" aria-expanded="true" aria-controls="collapseUser">
-                        <i class="fas fa-fw fa-table"></i>
+                        <i class="fas fa-fw fa-users"></i>
                         <span>Quản lý người dùng</span>
                     </a>
                     <div id="collapseUser" class="collapse" aria-labelledby="headingUser" data-parent="#accordionSidebar">
@@ -156,12 +156,16 @@
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" asp-action="PersonalDetails" asp-controller="Users">
                                     <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Thông tin
+                                </a>                                
+                                <a class="dropdown-item" asp-action="PersonalEdit" asp-controller="Users">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Cập nhật
                                 </a>
-                                <a class="dropdown-item" href="#">
-                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                <a class="dropdown-item" asp-action="ChangePassword" asp-controller="Users">
+                                    <i class="fas fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Đổi mật khẩu
                                 </a>
                                 <div class="dropdown-divider"></div>

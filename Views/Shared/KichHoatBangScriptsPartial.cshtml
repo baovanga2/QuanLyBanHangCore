@@ -8,16 +8,6 @@
                 "url": "/lib/datatables/language/Vietnamese.json"
             }
         });
-        $('#dtKH').DataTable({
-            "columnDefs": [
-                { "orderable": false, "targets": 2 }
-            ]
-        });
-        $('#dtLSPvaNSX').DataTable({
-            "columnDefs": [
-                { "orderable": false, "targets": 1 }
-            ]
-        });
         $('#dtProduct').DataTable({
             "columnDefs": [
                 { "orderable": false, "targets": [3, 4, 5] }
@@ -30,12 +20,49 @@
                 null,
                 null
             ]
-        });  
+        });
+        $('#dtOrder').DataTable({
+            order: [1, 'desc'],
+            "columnDefs": [
+                { "orderable": false, "targets": 5 }
+            ],
+            "columns": [
+                null,
+                null,
+                null,
+                { data: "3", render: $.fn.dataTable.render.number(' ', '.', 0, ' ', ' VND') },
+                null,
+                null
+            ]
+        });
+        $('#dtProductSell').DataTable({
+            "order":[1, 'asc'],
+            "columnDefs": [
+                { "orderable": false, "targets": 0 },
+            ],
+            "columns": [
+                null,
+                null,
+                { data: "2", render: $.fn.dataTable.render.number(' ', '.', 0, ' ', ' VND') },
+                null
+            ]
+        });
+        $('#dtKH').DataTable({
+            "columnDefs": [
+                { "orderable": false, "targets": 2 }
+            ]
+        });
+        $('#dtLSPvaNSX').DataTable({
+            "columnDefs": [
+                { "orderable": false, "targets": 1 }
+            ]
+        });
         $('#dtPrice').DataTable({
             order: [1 , 'desc'],
             searching: false,
             paging: false,
             scrollY: 200,
+            "info": false,
             "columns": [
                 { data: "0", render: $.fn.dataTable.render.number(' ', '.', 0, ' ', ' VND') },
                 null,
