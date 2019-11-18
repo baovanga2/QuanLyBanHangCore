@@ -1,4 +1,4 @@
-﻿@model LoiViewModel
+﻿@model OrderCreateViewModel
 
 @{
     ViewData["Title"] = "Thêm đơn hàng";
@@ -56,10 +56,10 @@
                         <tr>
                             <td><h6 class="m-0 font-weight-bold text-primary">Khách hàng:</h6></td>
                             <td>
-                                <select asp-items="ViewBag.CustomerID" id="slKH" class="form-control">
-                                    <option value="0">Chọn khách hàng ...</option>
+                                <select asp-for="CustomerID" asp-items="ViewBag.CustomerID" id="slKH" class="form-control">
+                                    <option value="">Chọn khách hàng ...</option>
                                 </select>
-                                <span id="loi1" asp-validation-for="Loi1" class="text-danger"></span>
+                                <span id="loiSlKH" asp-validation-for="CustomerID" class="text-danger"></span>
                             </td>
                         </tr>
                     </table>
@@ -69,10 +69,13 @@
         <div class="card-body">
             <div class="table table-responsive">
                 <h4>Thông tin đơn hàng</h4>
-                <span id="loi2" asp-validation-for="Loi2" class="text-danger"></span>
+                <div id="loiItem" asp-validation-summary="ModelOnly" class="text-danger"></div>
                 @*Table Cart*@
                 <div id="ddtCartAjax"></div>
             </div>
+            <button type="submit" style="float: right;" class="btn btn-outline-primary"><i class="fas fa-money-check-alt"></i> Thêm</button>
+            <br />
+            <br />
         </div>
     </form>
 </div>
@@ -88,18 +91,6 @@
                     $('#ddtCartAjax').html(result);
                 }
             });
-            $('#slKH').change(function () {
-                $.ajax({
-                    type: 'GET',
-                    url: '/Orders/SelectCustomer',
-                    data: {
-                        'id': $('#slKH').val()
-                    }
-                });
-                if ($('#slKH') != 0) {
-                    $('#loi1').hide();
-                }
-            });
             $('.btnAdd').click(function () {
                 $.ajax({
                     type: 'GET',
@@ -109,7 +100,9 @@
                     },
                     success: function (result) {
                         $('#ddtCartAjax').html(result);
-                        $('#loi2').hide();
+                        if ($('#loiItem').show()) {
+                            $('#loiItem').hide();
+                        }
                     }
                 });
             });
@@ -119,5 +112,6 @@
         await Html.RenderPartialAsync("ThuVienBangScriptsPartial.cshtml");
         await Html.RenderPartialAsync("KichHoatBangScriptsPartial.cshtml");
         await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "DH");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

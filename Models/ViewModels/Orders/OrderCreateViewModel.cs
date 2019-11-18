@@ -11,9 +11,11 @@ namespace QuanLyBanHangCore.Models.ViewModels
     {
         public OrderCreateViewModel()
         {
-            DetailOrders = new List<DetailOrderCreateViewModel>();
+            DetailOrders = new List<ItemCreateViewModel>();
         }
-        public List<DetailOrderCreateViewModel> DetailOrders { get; set; }
+        [Required(ErrorMessage = "Vui lòng chọn khách hàng")]
+        public int? CustomerID { get; set; }
+        public List<ItemCreateViewModel> DetailOrders { get; set; }
 
         public ulong LayTongTien()
         {
@@ -23,6 +25,18 @@ namespace QuanLyBanHangCore.Models.ViewModels
                 tongTien += item.LayTamTinh();
             }
             return tongTien;
+        }
+    }
+
+    public class ItemCreateViewModel
+    {
+        public int ProductID { get; set; }
+        public string ProductTen { get; set; }
+        public ulong Gia { get; set; }
+        public ushort SoLuongBan { get; set; }
+        public ulong LayTamTinh()
+        {
+            return Gia * SoLuongBan;
         }
     }
 }

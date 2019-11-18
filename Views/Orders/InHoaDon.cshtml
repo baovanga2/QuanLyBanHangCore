@@ -1,0 +1,120 @@
+﻿@model BillViewModel
+
+@{
+    ViewData["Title"] = "Hóa đơn";
+}
+
+@section Styles{
+    <link href="~/mystyle/css/HoaDonStyles.css" rel="stylesheet" />
+}
+<button type="button" id="btnIn" class="btn btn-outline-primary" style="margin-left:30px;"><i class="fas fa-print"></i> In hóa đơn</button>
+<div id="invoice">
+    <div class="invoice overflow-auto">
+        <div style="min-width: 600px">
+            <header>
+                <div class="row">
+                    <div class="col">
+                        <a asp-action="Index" asp-controller="Orders">
+                            <img src="~/img/logoBill.png" data-holder-rendered="true" />
+                        </a>
+                    </div>
+                    <div class="col company-details">
+                        <h2 class="name">
+                            Cần Thơ
+                        </h2>
+                        <div>Trường Đại học Cần Thơ</div>
+                        <div>0123 456 789</div>
+                        <div>baovanga2@gmail.com</div>
+                    </div>
+                </div>
+            </header>
+            <main>
+                <div class="row contacts">
+                    <div class="col invoice-to">
+                        <div class="text-gray-light">Thông tin khách hàng</div>
+                        <h2 class="to">@Model.CustomerName</h2>
+                        @{ 
+                            string SDT = Model.CustomerSDT;
+                            string Dau = SDT.Substring(0, 4);
+                            string Giua = SDT.Substring(4, 3);
+                            string Cuoi = SDT.Substring(7);
+                        }
+                        <div class="address">Số điện thoại: @String.Format("{0} {1} {2}", Dau, Giua, Cuoi)</div>
+                    </div>
+                    <div class="col invoice-details">
+                        <h1 class="invoice-id">Hóa đơn #@Model.ID.ToString()</h1>
+                        <div><span>Thời gian: </span><span>@Html.DisplayFor(model => model.ThoiGianTao)</span></div>
+                        <div>Tạo bởi: @Model.UserName</div>
+                    </div>
+                </div>
+                <table border="0" cellspacing="0" cellpadding="0">
+                    <thead>
+                        <tr>
+                            <th class="text-left">Tên sản phẩm</th>
+                            <th class="text-right">Giá</th>
+                            <th class="text-right">Số lượng</th>
+                            <th class="text-right">Tạm tính</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td class="text-left">
+                                    <h3>
+                                        @item.Ten
+                                    </h3>
+                                </td>
+                                <td class="unit">@String.Format("{0:### ### ### VND}", item.Gia)</td>
+                                <td class="qty">@item.SoLuong.ToString()</td>
+                                <td class="total">@String.Format("{0:### ### ### VND}", item.LayTamTinh())</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="1"></td>
+                            <td colspan="2">TỔNG TIỀN</td>
+                            <td>@String.Format("{0:### ### ### VND}", Model.LayTongTien())</td>
+                        </tr>
+                        <tr>
+                            <td colspan="1"></td>
+                            <td colspan="2">TAX 10%</td>
+                            <td>@String.Format("{0:### ### ### VND}", Model.LayTongTien() * 10 / 100)</td>
+                        </tr>
+                        <tr>
+                            <td colspan="1"></td>
+                            <td colspan="2">THÀNH TIỀN</td>
+                            <td>@String.Format("{0:### ### ### VND}", Model.LayTongTien() * 110 / 100)</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="thanks">Cảm ơn quý khách!</div>
+                <div class="notices">
+                    <div class="notice">Hẹn gặp lại quý khách!</div>
+                </div>
+            </main>
+            <footer>
+                Invoice was created on a computer and is valid without the signature and seal.
+            </footer>
+        </div>
+        <!--DO NOT DELETE THIS div. IT is responsible for showing footer always at the bottom-->
+        <div></div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#btnIn').click(function () {
+                Popup($('.invoice')[0].outerHTML);
+                function Popup(data) {
+                    window.print();
+                    return true;
+                }
+            });
+        });
+    </script>
+    @{
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "DH");
+    }
+}

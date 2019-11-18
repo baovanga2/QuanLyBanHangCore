@@ -19,11 +19,12 @@
                             <button type="button" value="@item.ProductID" class="btnRemove btn btn-outline-danger"><i class="fas fa-minus"></i> Gỡ</button>
                         </td>
                         <td>@item.ProductTen</td>
-                        <td class="text-center">@item.SoLuongBan</td>
+                        <td class="text-center">
+                            <input id="@item.ProductID" value="@item.SoLuongBan" class="inpSoLuongBan form-control text-center" type="number" min="1" />
+                        </td>
                         <td>@item.LayTamTinh()</td>
                     </tr>
                 }
-
             }
             else
             {
@@ -45,9 +46,6 @@
         <tr>
             <th colspan="4">Thành tiền: </th>
             <th style="text-align: right;" colspan="3">@String.Format("{0:### ### ### VND}", Model.LayTongTien() * 110 / 100)</th>
-        </tr>
-        <tr>
-            <th colspan="7"><button type="submit" style="float: right;" class="btn btn-outline-primary"><i class="fas fa-money-check-alt"></i> Thêm</button></th>
         </tr>
     </table>
     <script>
@@ -74,6 +72,18 @@
                     success: function (result) {
                         $('#dthis').html(result);
                     }
+                });
+            });
+            $('.inpSoLuongBan').change(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '/Orders/ThayDoiSoLuongBan',
+                    data: {
+                        id: $(this)[0].id,
+                        soLuong: $(this).val()
+                    }
+                }).done(function (result) {
+                    $('#dthis').html(result);
                 });
             });
         });
