@@ -36,7 +36,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
     public class ItemDetailsViewModel
     {
         public ulong Gia { get; set; }
-        public ushort SoLuong { get; set; }
+        public uint SoLuong { get; set; }
         public string Ten { get; set; }
         public ulong LayTamTinh()
         {

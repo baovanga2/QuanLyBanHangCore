@@ -12,7 +12,7 @@ namespace QuanLyBanHangCore.Models
         public ulong Gia { get; set; }
 
         [Display(Name = "Số lượng")]
-        public ushort SoLuong { get; set; }
+        public uint SoLuong { get; set; }
 
         public int OrderID { get; set; }
 

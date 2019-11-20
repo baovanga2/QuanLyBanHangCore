@@ -72,6 +72,7 @@ namespace QuanLyBanHangCore.Controllers
             }
             DateTime now = DateTime.Now;
             List<ProductPrice> productPrices = await _context.ProductPrices
+                .AsNoTracking()
                 .Where(pp => pp.ProductID == id)
                 .OrderByDescending(pp => pp.TGKT)
                 .ToListAsync();
@@ -96,7 +97,7 @@ namespace QuanLyBanHangCore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID, Ten, SoLuong, ProducerID, CategoryID, Gia")] ProductWithCurrentPrice productWithCurrentPrice)
+        public async Task<IActionResult> Create([Bind("ID, Ten, ProducerID, CategoryID, Gia")] ProductWithCurrentPrice productWithCurrentPrice)
         {
             if (ModelState.IsValid)
             {
@@ -105,7 +106,7 @@ namespace QuanLyBanHangCore.Controllers
                 {
                     ID = productWithCurrentPrice.ID,
                     Ten = productWithCurrentPrice.Ten,
-                    SoLuong = productWithCurrentPrice.SoLuong,
+                    SoLuong = 0,
                     ProducerID = productWithCurrentPrice.ProducerID,
                     CategoryID = productWithCurrentPrice.CategoryID
                 };
@@ -213,7 +214,6 @@ namespace QuanLyBanHangCore.Controllers
                         throw;
                     }
                 }
-                
             }
             ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.CategoryID);
             ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.ProducerID);
@@ -261,6 +261,52 @@ namespace QuanLyBanHangCore.Controllers
             }
             ModelState.AddModelError(string.Empty, "Vì có đơn hàng có sản phẩm này nên không thể xóa, chỉ có thể xóa khi không có đơn hàng có sản phẩm này!");
             return View(product);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Thủ kho")]
+        public async Task<IActionResult> AddQuantity(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ID == id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            var model = new ProductAddQuantityViewModel
+            {
+                ID = product.ID,
+                Ten = product.Ten,
+                SoLuongCo = product.SoLuong
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Thủ kho")]
+        public async Task<IActionResult> AddQuantity(int id, [Bind("ID,Ten,SoLuongCo,SoLuongThem")] ProductAddQuantityViewModel model)
+        {
+            if (id != model.ID)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.ID == id);
+                if (product == null)
+                {
+                    return NotFound();
+                }
+                product.SoLuong += model.SoLuongThem;
+                _context.Update(product);
+                await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"Sản phẩm \"{product.Ten}\" đã cập nhật số lượng từ \"{model.SoLuongCo}\" đến \"{product.SoLuong}\"";
+                return RedirectToAction("Details", "Products", new { id = id });
+            }
+            return View(model);
         }
 
         private bool ProductExists(int id)

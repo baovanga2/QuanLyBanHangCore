@@ -14,7 +14,7 @@ namespace QuanLyBanHangCore.Models
 
         [Required(ErrorMessage = "Vui lòng nhập số lượng!")]
         [Display(Name = "Số lượng")]
-        public ushort SoLuong { get; set; }
+        public uint SoLuong { get; set; }
 
         [Display(Name = "Nhà sản xuất")]
         public int ProducerID { get; set; }

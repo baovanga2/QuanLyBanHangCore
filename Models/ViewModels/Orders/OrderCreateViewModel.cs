@@ -33,7 +33,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
         public int ProductID { get; set; }
         public string ProductTen { get; set; }
         public ulong Gia { get; set; }
-        public ushort SoLuongBan { get; set; }
+        public uint SoLuongBan { get; set; }
         public ulong LayTamTinh()
         {
             return Gia * SoLuongBan;

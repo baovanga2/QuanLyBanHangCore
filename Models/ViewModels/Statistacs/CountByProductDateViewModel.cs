@@ -41,7 +41,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
         [Display(Name = "Giá")]
         public ulong Gia { get; set; }
         [Display(Name = "Số lượng")]
-        public ushort SoLuong { get; set; }
+        public uint SoLuong { get; set; }
         public ulong LayTamTinh()
         {
             return Gia * SoLuong;
