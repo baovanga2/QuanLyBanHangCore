@@ -9,6 +9,7 @@ namespace QuanLyBanHangCore.Models
 {
     public class Customer
     {
+        [Display(Name = "Mã")]
         public int ID { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập tên!")]

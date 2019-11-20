@@ -35,7 +35,7 @@
                 <div class="sidebar-brand-icon">
                     <img src="~/img/logo.jpg" class="img-profile rounded-circle" width="40" />
                 </div>
-                <div class="sidebar-brand-text mx-3">Gold PC Shop</div>
+                <div class="sidebar-brand-text mx-3">PC Shop</div>
             </a>
 
             <!-- Divider -->
@@ -87,16 +87,20 @@
             </div>
 
             <!-- Nav Item - Thong ke -->
-            <div class="nav-item">
-                <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            <div class="nav-item" id="liTK">
+                <a href="" class="nav-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-dollar-sign"></i>
                     <span>Thống kê</span>
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Tùy chọn thống kê:</h6>
-                        <a class="collapse-item" href="buttons">Thống kê theo sản phẩm</a>
-                        <a class="collapse-item" href="cards.html">Thống kê theo khách hàng</a>
+                        <h6 class="collapse-header">Thống kê sản phẩm:</h6>
+                        <a asp-action="CountByProductDate" asp-controller="Statistics" id="liTKSPN" class="collapse-item" >Thống kê theo ngày</a>
+                        <a asp-action="CountByProductMonth" asp-controller="Statistics" id="liTKSPT" class="collapse-item">Thống kê theo tháng</a>
+                        <hr />
+                        <h6 class="collapse-header">Thống kê khách hàng:</h6>
+                        <a asp-action="CountByCustomerDate" asp-controller="Statistics" id="liTKKHN" class="collapse-item">Thống kê theo ngày</a>
+                        <a asp-action="CountByCustomerMonth" asp-controller="Statistics" id="liTKKHT" class="collapse-item">Thống kê theo tháng</a>
                     </div>
                 </div>
             </div>
@@ -104,7 +108,7 @@
             {
                 <!-- Nav Item - Nguoi dung -->
                 <div class="nav-item" id="liND">
-                    <a class="nav-link collapsed" data-toggle="collapse" data-target="#collapseUser" aria-expanded="true" aria-controls="collapseUser">
+                    <a href="" class="nav-link collapsed" data-toggle="collapse" data-target="#collapseUser" aria-expanded="true" aria-controls="collapseUser">
                         <i class="fas fa-fw fa-users"></i>
                         <span>Quản lý người dùng</span>
                     </a>

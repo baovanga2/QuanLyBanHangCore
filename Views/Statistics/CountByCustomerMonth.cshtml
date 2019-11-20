@@ -1,0 +1,75 @@
+﻿@model CountByCustomerMonthViewModel
+
+@{
+    ViewData["Title"] = "Thống kê khách hàng theo ngày";
+}
+
+@section Styles
+{
+    @{
+        await Html.RenderPartialAsync("ThuVienBangStylespartial.cshtml");
+    }
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Thống kê khách hàng đã mua theo ngày</h6>
+        <div style="margin-top:20px;">
+            <form method="post">
+                <div class="ml-md-5 row">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="col-md-3 form-group">
+                        <label asp-for="Thang" class="d-inline control-label"></label>
+                        <select asp-for="Thang" class="d-inline ml-1 form-control w-75" asp-items="ViewBag.Months"></select>
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <label asp-for="Nam" class="d-inline ml-2 control-label"></label>
+                        <select asp-for="Nam" class="d-inline ml-1 form-control w-75" asp-items="ViewBag.Years"></select>
+                    </div>
+                    <div class="col-md-4 form-group">
+                        <button type="submit" class="btn btn-outline-primary"><i class="fab fa-searchengin"></i> Thống kê</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped" id="dtCustomerCount" width="100%" cellspacing="0">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="text-center">Mã</th>
+                        <th>Tên khách hàng</th>
+                        <th>Tiền đã mua</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Customers)
+                    {
+                        <tr>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => item.ID)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Ten)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Tien)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @{
+        await Html.RenderPartialAsync("ThuVienBangScriptsPartial.cshtml");
+        await Html.RenderPartialAsync("KichHoatBangScriptsPartial.cshtml");
+        await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "TKKHT");
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

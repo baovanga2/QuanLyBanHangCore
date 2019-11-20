@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QuanLyBanHangCore.Models;
 using QuanLyBanHangCore.Models.ViewModels;
@@ -12,21 +13,42 @@ namespace QuanLyBanHangCore.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly QuanLyBanHangCoreContext _context;
+        public HomeController (QuanLyBanHangCoreContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
+            var orders = await _context.Orders
+                .Include(o => o.DetailOrders)
+                .AsNoTracking().ToListAsync();
+            var ordersNgay = orders.Where(o => o.ThoiGianTao == DateTime.Today);
+            double tongTienNgay = 0;
+            foreach (var o in ordersNgay)
+            {
+                foreach (var i in o.DetailOrders)
+                {
+                    tongTienNgay += i.Gia * i.SoLuong;
+                }
+            }
+            var ordersThang = orders
+                .Where(o => o.ThoiGianTao.Month == DateTime.Today.Month && o.ThoiGianTao.Year == DateTime.Today.Year);
+            double tongTienThang = 0;
+            foreach (var o in ordersThang)
+            {
+                foreach (var i in o.DetailOrders)
+                {
+                    tongTienThang += i.Gia * i.SoLuong;
+                }
+            }
+            var model = new HomeViewModel
+            {
+                TongTienNgay = tongTienNgay,
+                TongTienThang = tongTienThang
+            };
+            return View(model);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

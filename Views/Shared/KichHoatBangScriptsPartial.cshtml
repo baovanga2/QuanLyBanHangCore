@@ -8,6 +8,22 @@
                 "url": "/lib/datatables/language/Vietnamese.json"
             }
         });
+        $('#dtCustomerCount').DataTable({
+            order: [2,'desc'],
+            "columns": [
+                null,
+                null,
+                { data: "2", render: $.fn.dataTable.render.number(' ', '.', 0, ' ', ' VND') }
+            ]
+        });
+        $('#dtProductCount').DataTable({
+            "columns": [
+                null,
+                { data: "1", render: $.fn.dataTable.render.number(' ', '.', 0, ' ', ' VND') },
+                null,
+                { data: "3", render: $.fn.dataTable.render.number(' ', '.', 0, ' ', ' VND') }
+            ]
+        });
         $('#dtProduct').DataTable({
             "columnDefs": [
                 { "orderable": false, "targets": [3, 4, 5] }
@@ -49,7 +65,7 @@
         });
         $('#dtKH').DataTable({
             "columnDefs": [
-                { "orderable": false, "targets": 2 }
+                { "orderable": false, "targets": 3 }
             ]
         });
         $('#dtLSPvaNSX').DataTable({
