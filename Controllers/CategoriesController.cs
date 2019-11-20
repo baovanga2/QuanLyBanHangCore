@@ -162,11 +162,13 @@ namespace QuanLyBanHangCore.Controllers
         {
             return _context.Categories.Any(e => e.ID == id);
         }
-                
+
         [AcceptVerbs("Get", "Post")]
         public async Task<IActionResult> IsCategoryNameExists(string ten, int id)
         {
-            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Ten == ten && c.ID != id);
+            var category = await _context.Categories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Ten == ten && c.ID != id);
             if (category == null)
             {
                 return Json(true);

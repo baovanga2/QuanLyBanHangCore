@@ -31,7 +31,8 @@ namespace QuanLyBanHangCore.Models.ViewModels
         public Category Category { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập giá")]
-        [Display(Name = "Giá")]     
+        [Display(Name = "Giá")]  
+        [Range(0,999999999, ErrorMessage = "Vui lòng nhập giá hợp lệ!")]
         public ulong Gia { get; set; }
     }
 }

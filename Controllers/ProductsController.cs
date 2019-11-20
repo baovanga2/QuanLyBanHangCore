@@ -24,12 +24,18 @@ namespace QuanLyBanHangCore.Controllers
         [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
         public async Task<IActionResult> Index()
         {
-            DateTime dateTimeNow = DateTime.Now;
-            var products = await _context.Products.Include(p => p.Category).Include(p => p.Producer).AsNoTracking().ToListAsync();
+            DateTime now = DateTime.Now;
+            var products = await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Producer)
+                .AsNoTracking()
+                .ToListAsync();
             List<ProductWithCurrentPrice> productWithCurrentPrices = new List<ProductWithCurrentPrice>();
             foreach (Product p in products)
             {
-                var productPrice = await _context.ProductPrices.AsNoTracking().FirstOrDefaultAsync(pp => pp.ProductID == p.ID && pp.TGKT > dateTimeNow);
+                var productPrice = await _context.ProductPrices
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(pp => pp.ProductID == p.ID && pp.TGKT > now);
                 var productWithCurrentPrice = new ProductWithCurrentPrice
                 {
                     ID = p.ID,
@@ -64,13 +70,18 @@ namespace QuanLyBanHangCore.Controllers
             {
                 return NotFound();
             }
-            DateTime dateTimeNow = DateTime.Now;
-            List<ProductPrice> productPrices = _context.ProductPrices.Where(pp => pp.ProductID == id).OrderByDescending(pp => pp.TGKT).ToList();
-
-            ProductPrice productPrice = productPrices.First(pp => pp.TGKT > dateTimeNow);
-
-            ProductWithPriceList productWithPriceList = new ProductWithPriceList { Product = product, Gia = productPrice.Gia, ProductPrices = productPrices };
-
+            DateTime now = DateTime.Now;
+            List<ProductPrice> productPrices = await _context.ProductPrices
+                .Where(pp => pp.ProductID == id)
+                .OrderByDescending(pp => pp.TGKT)
+                .ToListAsync();
+            ProductPrice productPrice = productPrices.First(pp => pp.TGKT > now);
+            ProductWithPriceList productWithPriceList = new ProductWithPriceList
+            {
+                Product = product,
+                Gia = productPrice.Gia,
+                ProductPrices = productPrices
+            };
             return View(productWithPriceList);
         }
 
@@ -89,7 +100,7 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                DateTime dateTimeNow = DateTime.Now;
+                DateTime now = DateTime.Now;
                 var product = new Product
                 {
                     ID = productWithCurrentPrice.ID,
@@ -103,7 +114,7 @@ namespace QuanLyBanHangCore.Controllers
                 var productPrice = new ProductPrice
                 {
                     Gia = productWithCurrentPrice.Gia,
-                    TGBD = dateTimeNow,
+                    TGBD = now,
                     TGKT = DateTime.Parse("9999-1-1"),
                     ProductID = product.ID
                 };
@@ -125,13 +136,14 @@ namespace QuanLyBanHangCore.Controllers
             {
                 return NotFound();
             }
-            var dateTimeNow = DateTime.Now;
+            var now = DateTime.Now;
             var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
-            var productPrice = await _context.ProductPrices.FirstAsync(pp => pp.ProductID == id && pp.TGKT > dateTimeNow);
+            var productPrice = await _context.ProductPrices
+                .FirstAsync(pp => pp.ProductID == id && pp.TGKT > now);
             ProductWithCurrentPrice productWithCurrentPrice = new ProductWithCurrentPrice
             {
                 ID = product.ID,
@@ -162,7 +174,7 @@ namespace QuanLyBanHangCore.Controllers
             {
                 try
                 {
-                    DateTime dateTimeNow = DateTime.Now;
+                    DateTime now = DateTime.Now;
                     var product = new Product
                     {
                         ID = productWithCurrentPrice.ID,
@@ -172,18 +184,18 @@ namespace QuanLyBanHangCore.Controllers
                         CategoryID = productWithCurrentPrice.CategoryID
                     };
                     _context.Update(product);
-                    ProductPrice productPrice = _context.ProductPrices.First(pp => pp.ProductID == id && pp.TGKT > dateTimeNow);
+                    ProductPrice productPrice = _context.ProductPrices.First(pp => pp.ProductID == id && pp.TGKT > now);
                     if (productWithCurrentPrice.Gia != productPrice.Gia)
                     {
                         ProductPrice productPriceNew = new ProductPrice
                         {
                             Gia = productWithCurrentPrice.Gia,
-                            TGBD = dateTimeNow,
+                            TGBD = now,
                             TGKT = DateTime.Parse("9999-1-1"),
                             ProductID = productWithCurrentPrice.ID
                         };
                         _context.Add(productPriceNew);
-                        productPrice.TGKT = dateTimeNow;
+                        productPrice.TGKT = now;
                         _context.Update(productPrice);
                     }
                     await _context.SaveChangesAsync();
@@ -236,6 +248,8 @@ namespace QuanLyBanHangCore.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             Product product = await _context.Products
+                .Include(p => p.Producer)
+                .Include(p => p.Category)
                 .Include(p => p.ProductPrices)
                 .SingleAsync(p => p.ID == id);
             if (!_context.DetailOrders.Any(d => d.ProductID == id))

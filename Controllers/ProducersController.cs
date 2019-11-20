@@ -167,7 +167,9 @@ namespace QuanLyBanHangCore.Controllers
         [AcceptVerbs("Get", "Post")]
         public async Task<IActionResult> IsProducerNameExists(string ten, int id)
         {
-            var producer = await _context.Producers.FirstOrDefaultAsync(p => p.Ten == ten && p.ID != id);
+            var producer = await _context.Producers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Ten == ten && p.ID != id);
             if (producer == null)
             {
                 return Json(true);

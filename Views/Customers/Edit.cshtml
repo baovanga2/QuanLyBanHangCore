@@ -4,7 +4,7 @@
     ViewData["Title"] = "Cập nhật khách hàng";
 }
 
-<h1>Cập nhật thông tin</h1>
+<h1>Cập nhật</h1>
 
 <h4>Khách hàng</h4>
 <hr />
@@ -12,7 +12,10 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="ID" />
+            <div class="form-group">
+                <label asp-for="ID" class="control-label"></label>
+                <input asp-for="ID" class="form-control" readonly/>
+            </div>
             <div class="form-group">
                 <label asp-for="Ten" class="control-label"></label>
                 <input asp-for="Ten" class="form-control" />

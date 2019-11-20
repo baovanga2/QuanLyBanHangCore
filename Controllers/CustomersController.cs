@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Controllers
 {
@@ -54,7 +51,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // POST: Customers/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -63,14 +60,10 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (!CustomerExists(0 , customer.Ten, customer.SDT))
-                {
-                    _context.Add(customer);
-                    await _context.SaveChangesAsync();
-                    TempData["messageSuccess"] = $"Khách hàng \"{customer.Ten}\" đã được thêm.";
-                    return RedirectToAction("Details", "Customers", new { id = customer.ID});
-                }
-                ModelState.AddModelError("", "Khách hàng đã tồn tại.");
+                _context.Add(customer);
+                await _context.SaveChangesAsync();
+                TempData["messageSuccess"] = $"Khách hàng \"{customer.Ten}\" đã được thêm.";
+                return RedirectToAction("Details", "Customers", new { id = customer.ID });
             }
             return View(customer);
         }
@@ -93,7 +86,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // POST: Customers/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -107,28 +100,24 @@ namespace QuanLyBanHangCore.Controllers
 
             if (ModelState.IsValid)
             {
-                if (!CustomerExists(id, customer.Ten, customer.SDT))
+                try
                 {
-                    try
-                    {
-                        _context.Update(customer);
-                        await _context.SaveChangesAsync();
-                        TempData["messageSuccess"] = $"Khách hàng \"{customer.Ten}\" đã được cập nhật.";
-                    }
-                    catch (DbUpdateConcurrencyException)
-                    {
-                        if (!CustomerExists(customer.ID))
-                        {
-                            return NotFound();
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                    return RedirectToAction("Details", "Customers", new { id = customer.ID });
+                    _context.Update(customer);
+                    await _context.SaveChangesAsync();
+                    TempData["messageSuccess"] = $"Khách hàng \"{customer.Ten}\" đã được cập nhật.";
                 }
-                ModelState.AddModelError("", "Khách hàng đã tồn tại.");
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CustomerExists(customer.ID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Details", "Customers", new { id = customer.ID });
             }
             return View(customer);
         }
@@ -175,9 +164,21 @@ namespace QuanLyBanHangCore.Controllers
             return _context.Customers.Any(e => e.ID == id);
         }
 
-        private bool CustomerExists(int id, string ten, string sdt)
+        [AcceptVerbs("Get", "Post")]
+        public async Task<IActionResult> KiemTraSDT(string sdt, int id)
         {
-            return _context.Customers.Any(c => c.Ten == ten && c.SDT == sdt && c.ID != id);
+            if (sdt == null)
+            {
+                return Json(true);
+            }
+            var customer = await _context.Customers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.SDT.Equals(sdt) && c.ID != id);
+            if (customer == null)
+            {
+                return Json(true);
+            }
+            return Json($"Số điện thoại \"{sdt}\" đã được sử dụng!");
         }
     }
 }

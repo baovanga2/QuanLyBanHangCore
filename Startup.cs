@@ -30,7 +30,7 @@ namespace QuanLyBanHangCore
                     options.UseSqlServer(Configuration.GetConnectionString("QuanLyBanHangCoreContext")));
             services.AddIdentity<User, IdentityRole<int>>()
                 .AddEntityFrameworkStores<QuanLyBanHangCoreContext>()
-                .AddDefaultTokenProviders();            
+                .AddDefaultTokenProviders();
             services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -44,7 +44,7 @@ namespace QuanLyBanHangCore
                 options.Lockout.MaxFailedAccessAttempts = 10;
                 options.Lockout.AllowedForNewUsers = true;
 
-                options.User.AllowedUserNameCharacters ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
                 options.User.RequireUniqueEmail = false;
             });
 
