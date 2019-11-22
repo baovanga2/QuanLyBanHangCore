@@ -165,7 +165,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         [AcceptVerbs("Get", "Post")]
-        public async Task<IActionResult> IsProducerNameExists(string ten, int id)
+        public async Task<IActionResult> KiemTraTen(string ten, int id)
         {
             var producer = await _context.Producers
                 .AsNoTracking()

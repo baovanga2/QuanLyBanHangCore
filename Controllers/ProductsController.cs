@@ -22,7 +22,7 @@ namespace QuanLyBanHangCore.Controllers
 
         // GET: Products
         [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string category, string producer)
         {
             DateTime now = DateTime.Now;
             var products = await _context.Products
@@ -30,6 +30,14 @@ namespace QuanLyBanHangCore.Controllers
                 .Include(p => p.Producer)
                 .AsNoTracking()
                 .ToListAsync();
+            if (!string.IsNullOrEmpty(category))
+            {
+                products = products.Where(p => p.Category.Ten == category).ToList();
+            }
+            if (!string.IsNullOrEmpty(producer))
+            {
+                products = products.Where(p => p.Producer.Ten == producer).ToList();
+            }
             List<ProductWithCurrentPrice> productWithCurrentPrices = new List<ProductWithCurrentPrice>();
             foreach (Product p in products)
             {
@@ -49,7 +57,15 @@ namespace QuanLyBanHangCore.Controllers
                 };
                 productWithCurrentPrices.Add(productWithCurrentPrice);
             }
-            return View(productWithCurrentPrices);
+            var model = new ProductIndexViewModel
+            {
+                Categories = new SelectList(_context.Categories, "Ten", "Ten"),
+                Producers = new SelectList(_context.Producers, "Ten", "Ten"),
+                Category = "Chọn loại sản phẩm ...",
+                Producer = "Chọn nhà sản xuất ...",
+                Products = productWithCurrentPrices
+            };
+            return View(model);
         }
 
         // GET: Products/Details/5
@@ -90,8 +106,8 @@ namespace QuanLyBanHangCore.Controllers
         [Authorize(Roles = "Thủ kho")]
         public IActionResult Create()
         {
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten");
-            ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten");
+            ViewBag.CategoryID = new SelectList(_context.Categories, "ID", "Ten");
+            ViewBag.ProducerID = new SelectList(_context.Producers, "ID", "Ten");
             return View();
         }
 
@@ -124,8 +140,8 @@ namespace QuanLyBanHangCore.Controllers
                 TempData["messageSuccess"] = $"Sản phẩm \"{productWithCurrentPrice.Ten}\" đã được thêm";
                 return RedirectToAction("Details", "Products", new { id = product.ID });
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.CategoryID);
-            ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.ProducerID);
+            ViewBag.CategoryID = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.CategoryID);
+            ViewBag.ProducerID = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.ProducerID);
             return View(productWithCurrentPrice);
         }
 
@@ -138,7 +154,7 @@ namespace QuanLyBanHangCore.Controllers
                 return NotFound();
             }
             var now = DateTime.Now;
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.ID == id);
             if (product == null)
             {
                 return NotFound();
@@ -149,12 +165,13 @@ namespace QuanLyBanHangCore.Controllers
             {
                 ID = product.ID,
                 Ten = product.Ten,
+                CategoryID = product.CategoryID,
+                ProducerID = product.ProducerID,
                 SoLuong = product.SoLuong,
                 Gia = productPrice.Gia
             };
-
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", product.CategoryID);
-            ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten", product.ProducerID);
+            ViewBag.CategoryID = new SelectList(_context.Categories, "ID", "Ten", product.CategoryID);
+            ViewBag.ProducerID = new SelectList(_context.Producers, "ID", "Ten", product.ProducerID);
             return View(productWithCurrentPrice);
         }
 
@@ -215,8 +232,8 @@ namespace QuanLyBanHangCore.Controllers
                     }
                 }
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.CategoryID);
-            ViewData["ProducerID"] = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.ProducerID);
+            ViewBag.CategoryID = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.CategoryID);
+            ViewBag.ProducerID = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.ProducerID);
             return View(productWithCurrentPrice);
         }
 
@@ -315,7 +332,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         [AcceptVerbs("Get", "Post")]
-        public async Task<IActionResult> IsProductNameExists(string ten, int id)
+        public async Task<IActionResult> KiemTraTen(string ten, int id)
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Ten == ten && p.ID != id);
             if (product == null)
