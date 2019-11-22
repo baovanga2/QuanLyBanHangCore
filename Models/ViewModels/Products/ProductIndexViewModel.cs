@@ -9,6 +9,10 @@ namespace QuanLyBanHangCore.Models.ViewModels
 {
     public class ProductIndexViewModel
     {
+        public ProductIndexViewModel()
+        {
+            Products = new List<ProductWithCurrentPrice>();
+        }
         public List<ProductWithCurrentPrice> Products { get; set; }
         public SelectList Categories { get; set; }
         [Display(Name = "Loại sản phẩm")]

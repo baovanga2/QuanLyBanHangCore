@@ -38,7 +38,11 @@ namespace QuanLyBanHangCore.Controllers
             {
                 products = products.Where(p => p.Producer.Ten == producer).ToList();
             }
-            List<ProductWithCurrentPrice> productWithCurrentPrices = new List<ProductWithCurrentPrice>();
+            var model = new ProductIndexViewModel
+            {
+                Categories = new SelectList(_context.Categories, "Ten", "Ten"),
+                Producers = new SelectList(_context.Producers, "Ten", "Ten")
+            };
             foreach (Product p in products)
             {
                 var productPrice = await _context.ProductPrices
@@ -55,16 +59,8 @@ namespace QuanLyBanHangCore.Controllers
                     Category = p.Category,
                     Gia = productPrice.Gia
                 };
-                productWithCurrentPrices.Add(productWithCurrentPrice);
+                model.Products.Add(productWithCurrentPrice);
             }
-            var model = new ProductIndexViewModel
-            {
-                Categories = new SelectList(_context.Categories, "Ten", "Ten"),
-                Producers = new SelectList(_context.Producers, "Ten", "Ten"),
-                Category = "Chọn loại sản phẩm ...",
-                Producer = "Chọn nhà sản xuất ...",
-                Products = productWithCurrentPrices
-            };
             return View(model);
         }
 
