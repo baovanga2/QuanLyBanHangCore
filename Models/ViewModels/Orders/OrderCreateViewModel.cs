@@ -16,7 +16,8 @@ namespace QuanLyBanHangCore.Models.ViewModels
         }
         public DateTime ThoiGianTao { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn khách hàng")]
-        public int? CustomerID { get; set; }
+        [Display(Name = "Khách hàng")]
+        public int CustomerID { get; set; }
         public List<ItemCreateViewModel> DetailOrders { get; set; }
 
         public ulong LayTongTien()

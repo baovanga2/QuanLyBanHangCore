@@ -6,7 +6,7 @@
                 <th class="text-center" style="width:10%;">Gỡ?</th>
                 <th style="width:60%;">Tên sản phẩm</th>
                 <th class="text-center" style="width:10%;">Số lượng</th>
-                <th>Tạm tính</th>
+                <th class="text-right">Tạm tính</th>
             </tr>
         </thead>
         <tbody>
@@ -22,7 +22,7 @@
                         <td class="text-center">
                             <input id="@item.ProductID" value="@item.SoLuongBan" class="inpSoLuongBan form-control text-center" type="number" min="1" />
                         </td>
-                        <td>@item.LayTamTinh()</td>
+                        <td class="text-right">@item.LayTamTinh()</td>
                     </tr>
                 }
             }

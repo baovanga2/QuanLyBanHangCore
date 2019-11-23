@@ -1,4 +1,4 @@
-﻿@model OrderDetailsViewModel
+﻿@model OrderViewModel
 
 @{
     ViewData["Title"] = "Xóa đơn hàng";
@@ -42,13 +42,13 @@
         </dl>
         <dl class="col-md-5 row">
             <dt class="col-sm-4">Tổng tiền</dt>
-            <dd class="col-sm-8">@String.Format("{0:### ### ### VND}", Model.LayTongTien())</dd>
+            <dd class="col-sm-8">@String.Format("{0:### ### ### ### VND}", Model.LayTongTien())</dd>
 
             <dt class="col-sm-4">Tax (10%)</dt>
-            <dd class="col-sm-8">@String.Format("{0:### ### ### VND}", Model.LayTongTien() * 10 / 100)</dd>
+            <dd class="col-sm-8">@String.Format("{0:### ### ### ### VND}", Model.LayTongTien() * 10 / 100)</dd>
 
             <dt class="col-sm-4">Thành tiền</dt>
-            <dd class="col-sm-8">@String.Format("{0:### ### ### VND}", Model.LayTongTien() * 110 / 100)</dd>
+            <dd class="col-sm-8">@String.Format("{0:### ### ### ### VND}", Model.LayTongTien() * 110 / 100)</dd>
         </dl>
     </div>
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
