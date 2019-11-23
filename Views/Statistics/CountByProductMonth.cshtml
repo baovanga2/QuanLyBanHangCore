@@ -39,9 +39,9 @@
                 <thead class="thead-light">
                     <tr>
                         <th>Tên sản phẩm</th>
-                        <th>Giá</th>
-                        <th class="text-center">Số lượng</th>
-                        <th>Tạm tính</th>
+                        <th class="text-right">Giá</th>
+                        <th class="text-right">Số lượng</th>
+                        <th class="text-right">Tạm tính</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,13 +51,13 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Ten)
                             </td>
-                            <td>
+                            <td class="text-right">
                                 @Html.DisplayFor(modelItem => item.Gia)
                             </td>
-                            <td class="text-center">
+                            <td class="text-right">
                                 @Html.DisplayFor(modelItem => item.SoLuong)
                             </td>
-                            <td>
+                            <td class="text-right">
                                 @item.LayTamTinh()
                             </td>
                         </tr>
@@ -68,7 +68,7 @@
     </div>
     <div class="card-footer py-3 text-right">
         <h4 class="d-inline m-0 font-weight-bold text-primary">Tổng tiền:</h4>
-        <h4 class="d-inline ml-2 font-weight-bold text-primary">@String.Format("{0:### ### ### ### VND}", Model.LayTongTien())</h4>
+        <h4 class="d-inline ml-2 font-weight-bold text-primary">@String.Format("{0:### ### ### ### ### VND}", Model.LayTongTien())</h4>
     </div>
 </div>
 

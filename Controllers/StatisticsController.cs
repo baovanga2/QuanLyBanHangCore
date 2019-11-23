@@ -30,9 +30,12 @@ namespace QuanLyBanHangCore.Controllers
                 Dau = now,
                 Cuoi = now
             };
-            var orders = await _context.Orders.Include(o => o.DetailOrders)
-                .ThenInclude(dd => dd.Product).AsNoTracking()
-                .Where(o => o.ThoiGianTao.Date == now).ToListAsync();
+            var orders = await _context.Orders
+                .Include(o => o.DetailOrders)
+                    .ThenInclude(dd => dd.Product)
+                .AsNoTracking()
+                .Where(o => o.ThoiGianTao.Date == now)
+                .ToListAsync();
             var items = new List<ProductCount>();
             foreach (var order in orders)
             {
@@ -48,7 +51,8 @@ namespace QuanLyBanHangCore.Controllers
                 }
             }
             var itemsGroup = items.GroupBy(p => new { p.Ten, p.Gia })
-                .Select(p => new { Ten = p.Key.Ten, Gia = p.Key.Gia, SoLuong = (ushort)p.Sum(s => s.SoLuong)});
+                .Select(p => new { Ten = p.Key.Ten, Gia = p.Key.Gia,
+                    SoLuong = (ushort)p.Sum(s => s.SoLuong)});
             var products = new List<ProductCount>();
             foreach (var i in itemsGroup)
             {
@@ -66,15 +70,18 @@ namespace QuanLyBanHangCore.Controllers
 
         [HttpPost]
         [Route("Statistics/Index")]
-        [Authorize(Roles = "Kế toán,Thủ kho")]
+        [Authorize(Roles = "Kế toán, Thủ kho")]
         public async Task<IActionResult> CountByProductDate(CountByProductDateViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var orders = await _context.Orders
-                .Include(o => o.DetailOrders).ThenInclude(dd => dd.Product).AsNoTracking()
-                .Where(o => model.Dau.Date <= o.ThoiGianTao.Date && o.ThoiGianTao.Date <= model.Cuoi.Date)
-                .ToListAsync();
+                    .Include(o => o.DetailOrders)
+                        .ThenInclude(dd => dd.Product)
+                    .AsNoTracking()
+                    .Where(o => model.Dau.Date <= o.ThoiGianTao.Date
+                        && o.ThoiGianTao.Date <= model.Cuoi.Date)
+                    .ToListAsync();
                 var items = new List<ProductCount>();
                 foreach (var order in orders)
                 {
@@ -108,7 +115,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Kế toán,Thủ kho")]
+        [Authorize(Roles = "Kế toán, Thủ kho")]
         public async Task<IActionResult> CountByProductMonth()
         {
             var nowm = DateTime.Today.Month;
@@ -139,7 +146,8 @@ namespace QuanLyBanHangCore.Controllers
                 }
             }
             var itemsGroup = items.GroupBy(p => new { p.Ten, p.Gia })
-                .Select(p => new { Ten = p.Key.Ten, Gia = p.Key.Gia, SoLuong = (ushort)p.Sum(s => s.SoLuong) });
+                .Select(p => new { Ten = p.Key.Ten, Gia = p.Key.Gia,
+                    SoLuong = (ushort)p.Sum(s => s.SoLuong) });
             var products = new List<ProductCount>();
             foreach (var i in itemsGroup)
             {
@@ -179,7 +187,8 @@ namespace QuanLyBanHangCore.Controllers
                         .Include(o => o.DetailOrders)
                             .ThenInclude(dd => dd.Product)
                         .AsNoTracking()
-                        .Where(o => o.ThoiGianTao.Month == model.Thang && o.ThoiGianTao.Year == model.Nam)
+                        .Where(o => o.ThoiGianTao.Month == model.Thang
+                            && o.ThoiGianTao.Year == model.Nam)
                         .ToListAsync();
                 }
                 var items = new List<ProductCount>();
@@ -197,7 +206,8 @@ namespace QuanLyBanHangCore.Controllers
                     }
                 }
                 var itemsGroup = items.GroupBy(p => new { p.Ten, p.Gia })
-                    .Select(p => new { Ten = p.Key.Ten, Gia = p.Key.Gia, SoLuong = (ushort)p.Sum(s => s.SoLuong) });
+                    .Select(p => new { Ten = p.Key.Ten, Gia = p.Key.Gia,
+                        SoLuong = (ushort)p.Sum(s => s.SoLuong) });
                 var products = new List<ProductCount>();
                 foreach (var i in itemsGroup)
                 {
