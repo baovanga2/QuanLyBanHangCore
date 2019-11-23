@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Models.ViewModels
 {
@@ -13,11 +11,13 @@ namespace QuanLyBanHangCore.Models.ViewModels
         [DataType(DataType.Date)]
         [Display(Name = "Thời gian bắt đầu")]
         public DateTime Dau { get; set; }
+
         [Required(ErrorMessage = "Vui lòng nhập thời gian kết thúc!")]
         [DataType(DataType.Date)]
         [Display(Name = "Thời gian kết thúc")]
         [Remote(action: "KiemTraNgayCuoi", controller: "Statistics", AdditionalFields = "Dau")]
         public DateTime Cuoi { get; set; }
+
         public List<CustomerCount> Customers { get; set; }
     }
 

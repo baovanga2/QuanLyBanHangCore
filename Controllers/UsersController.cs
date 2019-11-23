@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using QuanLyBanHangCore.Models;
 using QuanLyBanHangCore.Models.ViewModels;
 using System.Collections.Generic;
@@ -61,7 +60,7 @@ namespace QuanLyBanHangCore.Controllers
                 if (result.Succeeded)
                 {
                     TempData["messageSuccess"] = $"Người dùng \"{user.Ten}\" đã được thêm!";
-                    return RedirectToAction("Details", "Users", new { taiKhoan = user.UserName});
+                    return RedirectToAction("Details", "Users", new { taiKhoan = user.UserName });
                 }
                 else
                 {
@@ -131,7 +130,7 @@ namespace QuanLyBanHangCore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Quản trị")]
-        public async Task<IActionResult> Edit(string taiKhoan ,[Bind("TaiKhoan,Ten,NgaySinh,GioiTinh,SDT,Email,DiaChi")] UserEditViewModel model)
+        public async Task<IActionResult> Edit(string taiKhoan, [Bind("TaiKhoan,Ten,NgaySinh,GioiTinh,SDT,Email,DiaChi")] UserEditViewModel model)
         {
             if (taiKhoan != model.TaiKhoan)
             {
@@ -234,7 +233,7 @@ namespace QuanLyBanHangCore.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Quản trị")]
-        public async Task<IActionResult > UserPasswordChange(string taiKhoan)
+        public async Task<IActionResult> UserPasswordChange(string taiKhoan)
         {
             if (taiKhoan == null)
             {
@@ -258,7 +257,7 @@ namespace QuanLyBanHangCore.Controllers
         [HttpPost]
         [Authorize(Roles = "Quản trị")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UserPasswordChange(string taiKhoan ,[Bind("TaiKhoan,Ten,MatKhauMoi,XacNhanMatKhauMoi")] UserPasswordChangeViewModel model)
+        public async Task<IActionResult> UserPasswordChange(string taiKhoan, [Bind("TaiKhoan,Ten,MatKhauMoi,XacNhanMatKhauMoi")] UserPasswordChangeViewModel model)
         {
             if (taiKhoan != model.TaiKhoan)
             {
@@ -533,10 +532,10 @@ namespace QuanLyBanHangCore.Controllers
                 {
                     continue;
                 }
-                
+
                 if (result.Succeeded)
                 {
-                    if (i < (model.Count -1))
+                    if (i < (model.Count - 1))
                     {
                         continue;
                     }

@@ -1,20 +1,20 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using QuanLyBanHangCore.Models;
+using QuanLyBanHangCore.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using QuanLyBanHangCore.Models;
-using QuanLyBanHangCore.Models.ViewModels;
 
 namespace QuanLyBanHangCore.Controllers
 {
     public class HomeController : Controller
     {
         private readonly QuanLyBanHangCoreContext _context;
-        public HomeController (QuanLyBanHangCoreContext context)
+
+        public HomeController(QuanLyBanHangCoreContext context)
         {
             _context = context;
         }
@@ -23,8 +23,9 @@ namespace QuanLyBanHangCore.Controllers
         {
             var orders = await _context.Orders
                 .Include(o => o.DetailOrders)
-                .AsNoTracking().ToListAsync();
-            var ordersNgay = orders.Where(o => o.ThoiGianTao == DateTime.Today);
+                .AsNoTracking()
+                .ToListAsync();
+            var ordersNgay = orders.Where(o => o.ThoiGianTao.Date == DateTime.Today);
             double tongTienNgay = 0;
             foreach (var o in ordersNgay)
             {
@@ -34,7 +35,8 @@ namespace QuanLyBanHangCore.Controllers
                 }
             }
             var ordersThang = orders
-                .Where(o => o.ThoiGianTao.Month == DateTime.Today.Month && o.ThoiGianTao.Year == DateTime.Today.Year);
+                .Where(o => o.ThoiGianTao.Month == DateTime.Today.Month
+                    && o.ThoiGianTao.Year == DateTime.Today.Year);
             double tongTienThang = 0;
             foreach (var o in ordersThang)
             {
@@ -48,6 +50,28 @@ namespace QuanLyBanHangCore.Controllers
                 TongTienNgay = tongTienNgay,
                 TongTienThang = tongTienThang
             };
+            string[] months = { "Một", "Hai", "Ba", "Bốn", "Năm", "Sáu", "Bảy", "Tám", "Chín",
+                "Mười", "Mười một", "Mười hai"};
+            for (int i = 1; i <= 12; i++)
+            {
+                var ordersThangNay = orders
+                .Where(o => o.ThoiGianTao.Month == i
+                    && o.ThoiGianTao.Year == DateTime.Today.Year);
+                double tongTienThangNay = 0;
+                foreach (var o in ordersThangNay)
+                {
+                    foreach (var item in o.DetailOrders)
+                    {
+                        tongTienThangNay += item.Gia * item.SoLuong;
+                    }
+                }
+                var tongTienHangThang = new ChartBarViewModel
+                {
+                    Thang = months[i-1],
+                    ThuNhap = tongTienThangNay
+                };
+                model.TongTienHangThang.Add(tongTienHangThang);
+            }
             return View(model);
         }
 

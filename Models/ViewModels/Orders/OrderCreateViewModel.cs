@@ -1,9 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Models.ViewModels
 {
@@ -14,10 +11,13 @@ namespace QuanLyBanHangCore.Models.ViewModels
             DetailOrders = new List<ItemCreateViewModel>();
             ThoiGianTao = DateTime.Now;
         }
+
         public DateTime ThoiGianTao { get; set; }
+
         [Required(ErrorMessage = "Vui lòng chọn khách hàng")]
         [Display(Name = "Khách hàng")]
         public int CustomerID { get; set; }
+
         public List<ItemCreateViewModel> DetailOrders { get; set; }
 
         public ulong LayTongTien()
@@ -37,6 +37,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
         public string ProductTen { get; set; }
         public ulong Gia { get; set; }
         public uint SoLuongBan { get; set; }
+
         public ulong LayTamTinh()
         {
             return Gia * SoLuongBan;

@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
 using QuanLyBanHangCore.Models.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Controllers
 {
     public class StatisticsController : Controller
     {
         private readonly QuanLyBanHangCoreContext _context;
-        public StatisticsController (QuanLyBanHangCoreContext context)
+
+        public StatisticsController(QuanLyBanHangCoreContext context)
         {
             _context = context;
         }
@@ -51,8 +52,12 @@ namespace QuanLyBanHangCore.Controllers
                 }
             }
             var itemsGroup = items.GroupBy(p => new { p.Ten, p.Gia })
-                .Select(p => new { Ten = p.Key.Ten, Gia = p.Key.Gia,
-                    SoLuong = (ushort)p.Sum(s => s.SoLuong)});
+                .Select(p => new
+                {
+                    Ten = p.Key.Ten,
+                    Gia = p.Key.Gia,
+                    SoLuong = (ushort)p.Sum(s => s.SoLuong)
+                });
             var products = new List<ProductCount>();
             foreach (var i in itemsGroup)
             {
@@ -146,8 +151,12 @@ namespace QuanLyBanHangCore.Controllers
                 }
             }
             var itemsGroup = items.GroupBy(p => new { p.Ten, p.Gia })
-                .Select(p => new { Ten = p.Key.Ten, Gia = p.Key.Gia,
-                    SoLuong = (ushort)p.Sum(s => s.SoLuong) });
+                .Select(p => new
+                {
+                    Ten = p.Key.Ten,
+                    Gia = p.Key.Gia,
+                    SoLuong = (ushort)p.Sum(s => s.SoLuong)
+                });
             var products = new List<ProductCount>();
             foreach (var i in itemsGroup)
             {
@@ -206,8 +215,12 @@ namespace QuanLyBanHangCore.Controllers
                     }
                 }
                 var itemsGroup = items.GroupBy(p => new { p.Ten, p.Gia })
-                    .Select(p => new { Ten = p.Key.Ten, Gia = p.Key.Gia,
-                        SoLuong = (ushort)p.Sum(s => s.SoLuong) });
+                    .Select(p => new
+                    {
+                        Ten = p.Key.Ten,
+                        Gia = p.Key.Gia,
+                        SoLuong = (ushort)p.Sum(s => s.SoLuong)
+                    });
                 var products = new List<ProductCount>();
                 foreach (var i in itemsGroup)
                 {

@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Models.ViewModels
 {
@@ -13,16 +11,20 @@ namespace QuanLyBanHangCore.Models.ViewModels
         [DataType(DataType.Date)]
         [Display(Name = "Thời gian bắt đầu")]
         public DateTime Dau { get; set; }
+
         [Required(ErrorMessage = "Vui lòng nhập thời gian kết thúc!")]
         [DataType(DataType.Date)]
         [Display(Name = "Thời gian kết thúc")]
-        [Remote(action:"KiemTraNgayCuoi", controller:"Statistics", AdditionalFields ="Dau")]
+        [Remote(action: "KiemTraNgayCuoi", controller: "Statistics", AdditionalFields = "Dau")]
         public DateTime Cuoi { get; set; }
+
         public List<ProductCount> Products { get; set; }
+
         public CountByProductDateViewModel()
         {
             Products = new List<ProductCount>();
         }
+
         public ulong LayTongTien()
         {
             ulong tongTien = 0;
@@ -34,14 +36,17 @@ namespace QuanLyBanHangCore.Models.ViewModels
         }
     }
 
-    public  class ProductCount
+    public class ProductCount
     {
         [Display(Name = "Tên sản phẩm")]
         public string Ten { get; set; }
+
         [Display(Name = "Giá")]
         public ulong Gia { get; set; }
+
         [Display(Name = "Số lượng")]
         public uint SoLuong { get; set; }
+
         public ulong LayTamTinh()
         {
             return Gia * SoLuong;

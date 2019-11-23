@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Models
 {
@@ -16,6 +13,7 @@ namespace QuanLyBanHangCore.Models
         [Remote(action: "KiemTraTen", controller: "Producers", AdditionalFields = nameof(ID))]
         [Display(Name = "Tên")]
         public string Ten { get; set; }
+
         public List<Product> Products { get; set; }
     }
 }

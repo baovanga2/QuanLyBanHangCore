@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QuanLyBanHangCore.Models.ViewModels
 {
@@ -10,11 +8,15 @@ namespace QuanLyBanHangCore.Models.ViewModels
     {
         [Display(Name = "Tháng")]
         public int Thang { get; set; }
+
         public List<Month> Months { get; set; }
+
         [Display(Name = "Năm")]
         public int Nam { get; set; }
+
         public List<int> Years { get; set; }
         public List<ProductCount> Products { get; set; }
+
         public CountByProductMonthViewModel()
         {
             Products = new List<ProductCount>();
@@ -41,6 +43,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
                 Years.Add(nowy - i);
             }
         }
+
         public ulong LayTongTien()
         {
             ulong tongTien = 0;

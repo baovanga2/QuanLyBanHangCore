@@ -1,5 +1,3 @@
-using System;
-
 namespace QuanLyBanHangCore.Models.ViewModels
 {
     public class ErrorViewModel
