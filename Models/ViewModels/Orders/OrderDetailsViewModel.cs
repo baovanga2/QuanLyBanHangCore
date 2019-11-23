@@ -15,7 +15,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
         [Display(Name = "Mã đơn hàng")]
         public int ID { get; set; }
         [Display(Name = "Thời gian")]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy HH:mm:ss}")]
         public DateTime ThoiGianTao { get; set; }
         [Display(Name = "Nhân viên")]
         public string UserName { get; set; }

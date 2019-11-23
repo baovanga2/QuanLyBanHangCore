@@ -29,17 +29,17 @@ namespace QuanLyBanHangCore.Controllers
         {
             var orders = await _context.Orders.Include(o => o.User).Include(o => o.Customer).Include(o => o.DetailOrders).AsNoTracking().ToListAsync();
             var model = new List<OrderViewModel>();
-            foreach (var order in orders)
+            foreach (var o in orders)
             {
-                var orderVM = new OrderViewModel
+                var order = new OrderViewModel
                 {
-                    ID = order.ID,
-                    ThoiGianTao = order.ThoiGianTao,
-                    UserName = order.User.Ten,
-                    CustomerName = order.Customer.Ten,
-                    DetailOrders = order.DetailOrders
+                    ID = o.ID,
+                    ThoiGianTao = o.ThoiGianTao,
+                    UserName = o.User.Ten,
+                    CustomerName = o.Customer.Ten,
+                    DetailOrders = o.DetailOrders
                 };
-                model.Add(orderVM);
+                model.Add(order);
             }
             return View(model);
         }
@@ -57,7 +57,7 @@ namespace QuanLyBanHangCore.Controllers
             {
                 return NotFound();
             }
-            var model = new OrderDetailsViewModel
+            var model = new OrderViewModel
             {
                 ID = order.ID,
                 ThoiGianTao = order.ThoiGianTao,
@@ -66,13 +66,7 @@ namespace QuanLyBanHangCore.Controllers
             };
             foreach (var item in order.DetailOrders)
             {
-                var itemVM = new ItemDetailsViewModel
-                {
-                    Gia = item.Gia,
-                    SoLuong = item.SoLuong,
-                    Ten = item.Product.Ten
-                };
-                model.Items.Add(itemVM);
+                model.DetailOrders.Add(item);
             }
             return View(model);
         }
@@ -194,7 +188,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Bán hàng")]
+        [Authorize(Roles = "Thu ngân")]
         public async Task<IActionResult> InHoaDon(int? id)
         {
             if (id == null)

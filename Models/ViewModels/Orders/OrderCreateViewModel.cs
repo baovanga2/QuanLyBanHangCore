@@ -12,7 +12,9 @@ namespace QuanLyBanHangCore.Models.ViewModels
         public OrderCreateViewModel()
         {
             DetailOrders = new List<ItemCreateViewModel>();
+            ThoiGianTao = DateTime.Now;
         }
+        public DateTime ThoiGianTao { get; set; }
         [Required(ErrorMessage = "Vui lòng chọn khách hàng")]
         public int? CustomerID { get; set; }
         public List<ItemCreateViewModel> DetailOrders { get; set; }

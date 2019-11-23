@@ -27,19 +27,19 @@
                         <th class="text-center">
                             @Html.DisplayNameFor(model => model.ID)
                         </th>
-                        <th>
+                        <th class="text-center">
                             @Html.DisplayNameFor(model => model.ThoiGianTao)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.CustomerName)
                         </th>
-                        <th>
-                            Tổng tiền
+                        <th class="text-right">
+                            Thành tiền (VAT)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.UserName)
                         </th>
-                        <th>Hành động</th>
+                        <th class="text-center">Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,19 +49,22 @@
                             <td class="text-center">
                                 @Html.DisplayFor(modelItem => item.ID)
                             </td>
-                            <td>
+                            <td class="text-center">
                                 @Html.DisplayFor(modelItem => item.ThoiGianTao)
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.CustomerName)
                             </td>
-                            <td>
-                                @item.LayThanhTien()
+                            <td class="text-right">
+                                @{ 
+                                    var thanhTien = item.LayTongTien() * 110 / 100;
+                                }
+                                @thanhTien
                             </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.UserName)
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <a asp-action="Details" asp-route-id="@item.ID" class="btn btn-sm btn-primary"><i class="fas fa-list"></i></a> |
                                 <a asp-action="Delete" asp-route-id="@item.ID" class="btn btn-sm btn-primary"><i class="fas fa-trash"></i></a>
                             </td>

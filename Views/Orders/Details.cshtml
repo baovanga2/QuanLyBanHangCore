@@ -1,4 +1,4 @@
-﻿@model OrderDetailsViewModel
+﻿@model OrderViewModel
 
 @{
     ViewData["Title"] = "Chi tiết đơn hàng";
@@ -47,18 +47,18 @@
             </dd>
 
             <dt class="col-sm-6">
-                @Html.DisplayNameFor(model => model.Items)
+                @Html.DisplayNameFor(model => model.DetailOrders)
             </dt>
         </dl>
         <dl class="col-md-5 row">
             <dt class="col-sm-4">Tổng tiền</dt>
-            <dd class="col-sm-8">@String.Format("{0:### ### ### VND}", Model.LayTongTien())</dd>
+            <dd class="col-sm-8">@String.Format("{0:### ### ### ### VND}", Model.LayTongTien())</dd>
 
             <dt class="col-sm-4">Tax (10%)</dt>
-            <dd class="col-sm-8">@String.Format("{0:### ### ### VND}", Model.LayTongTien() * 10 / 100)</dd>
+            <dd class="col-sm-8">@String.Format("{0:### ### ### ### VND}", Model.LayTongTien() * 10 / 100)</dd>
 
             <dt class="col-sm-4">Thành tiền</dt>
-            <dd class="col-sm-8">@String.Format("{0:### ### ### VND}", Model.LayTongTien() * 110 / 100)</dd>
+            <dd class="col-sm-8">@String.Format("{0:### ### ### ### VND}", Model.LayTongTien() * 110 / 100)</dd>
         </dl>
     </div>
     <div class="table-responsive">
@@ -66,19 +66,19 @@
             <thead class="thead-light">
                 <tr>
                     <th>Tên sản phẩm</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Tạm tính</th>
+                    <th class="text-right">Giá</th>
+                    <th class="text-right">Số lượng</th>
+                    <th class="text-right">Tạm tính</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Items)
+                @foreach (var item in Model.DetailOrders)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Ten)</td>
-                        <td>@String.Format("{0:### ### ### VND}", item.Gia)</td>
-                        <td>@Html.DisplayFor(modelItem => item.SoLuong)</td>
-                        <td>@String.Format("{0:### ### ### VND}", item.LayTamTinh())</td>
+                        <td>@Html.DisplayFor(modelItem => item.Product.Ten)</td>
+                        <td class="text-right">@String.Format("{0:### ### ### ### VND}", item.Gia)</td>
+                        <td class="text-right">@Html.DisplayFor(modelItem => item.SoLuong)</td>
+                        <td class="text-right">@String.Format("{0:### ### ### ### VND}", item.SoLuong*item.Gia)</td>
                     </tr>
                 }
             </tbody>
