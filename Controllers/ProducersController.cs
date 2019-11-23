@@ -17,14 +17,14 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Producers
-        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Producers.AsNoTracking().ToListAsync());
         }
 
         // GET: Producers/Details/5
-        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -169,7 +169,7 @@ namespace QuanLyBanHangCore.Controllers
         {
             var producer = await _context.Producers
                 .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Ten == ten && p.ID != id);
+                .FirstOrDefaultAsync(p => p.Ten.Trim() == ten.Trim() && p.ID != id);
             if (producer == null)
             {
                 return Json(true);

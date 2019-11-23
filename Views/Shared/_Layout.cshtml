@@ -217,17 +217,17 @@
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="LogoutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="LogoutModalLabel">Đăng xuất <i class="fa fa-lock"></i></h5>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="LogoutModalLabel">Đăng xuất &emsp;<i class="fa fa-lock"></i></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <div class="modal-body"><i class="fa fa-question-circle"></i> Bạn có chắc muốn đăng xuất?</div>
+                <div class="modal-body text-primary"><i class="fa fa-question-circle"></i>&ensp; Bạn có chắc muốn đăng xuất?</div>
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" type="button" data-dismiss="modal">Hủy</button>
                     <form method="post" asp-action="Logout" asp-controller="Account">
-                        <input type="submit" class="btn btn-primary" value="Đăng xuất" />
+                        <input type="submit" class="btn btn-outline-primary" value="Đăng xuất" />
                     </form>
                 </div>
             </div>

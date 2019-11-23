@@ -26,7 +26,7 @@
                 {
                     <img class="card-img-top" src="~/img/ketoan.png" height="140" />
                 }
-                @if (role.Ten == "Bán hàng")
+                @if (role.Ten == "Thu ngân")
                 {
                     <img class="card-img-top" src="~/img/banhang.jpg" height="140" />
                 }
@@ -34,7 +34,7 @@
                 <h6 class="card-title">
                     @if (role.Users.Any())
                     {
-                        <span>&diams; </span>
+                        <span>&diams;</span>
                         foreach (var user in role.Users)
                         {
                             <span>@user &diams;</span>

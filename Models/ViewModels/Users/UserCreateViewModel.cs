@@ -13,18 +13,15 @@ namespace QuanLyBanHangCore.Models.ViewModels
 
         [Required(ErrorMessage = "Vui lòng nhập ngày sinh!")]
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [Display(Name = "Ngày sinh")]
         public DateTime NgaySinh { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng nhập giới tính!")]
-        [MaxLength(5)]
         [Display(Name = "Giới tính")]
         public string GioiTinh { get; set; }
 
         [Required(ErrorMessage = "Vui lòng nhập số điện thoại!")]
         [StringLength(10, ErrorMessage = "Số điện thoại gồm 10 chữ số!", MinimumLength = 10)]
-        [RegularExpression(@"^[0]+[0-9]*$", ErrorMessage = "Số điện thoại bắt đầu bằng số 0, chỉ chứa các chữ số!")]
+        [RegularExpression(@"[0][0-9]*", ErrorMessage = "Số điện thoại bắt đầu bằng số 0, chỉ chứa các chữ số!")]
         [Display(Name = "Số điện thoại")]
         public string SDT { get; set; }
 
@@ -39,7 +36,8 @@ namespace QuanLyBanHangCore.Models.ViewModels
 
         [Required(ErrorMessage = "Vui lòng nhập tài khoản!")]
         [Display(Name = "Tài khoản")]
-        [Remote(action: "IsTaiKhoanExists", controller: "Users")]
+        [RegularExpression("[a-zA-Z0-9]*", ErrorMessage = "Tài khoản chỉ chứa chỉ cái và chữ số")]
+        [Remote(action: "KiemTraTaiKhoan", controller: "Users")]
         [MaxLength(20)]
         public string TaiKhoan { get; set; }
 

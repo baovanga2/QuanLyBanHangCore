@@ -17,7 +17,7 @@
 
 <div class="card shadow mb-4">
     <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Danh sách sản phẩm</h6>
+        <h6 class="m-0 font-weight-bold text-primary">Danh sách người dùng</h6>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -27,10 +27,11 @@
                         <td>
                             @Html.DisplayNameFor(model => model.Ten)
                         </td>
+                        <td class="text-center">@Html.DisplayNameFor(model => model.SDT)</td>
                         <td>
-                            @Html.DisplayNameFor(model => model.UserName)
+                            Tài khoản
                         </td>
-                        <td>Hành động</td>
+                        <td class="text-center">Hành động</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,10 +41,13 @@
                             <td>
                                 @Html.DisplayFor(modelItem => item.Ten)
                             </td>
+                            <td class="text-center">
+                                @Html.DisplayFor(modelItem => item.SDT)
+                            </td>
                             <td>
                                 @Html.DisplayFor(modelItem => item.UserName)
                             </td>
-                            <td>
+                            <td class="text-center">
                                 <a asp-action="Edit" asp-route-taiKhoan="@item.UserName" class="btn btn-sm btn-primary"><i class="fas fa-tools"></i></a> |
                                 <a asp-action="Details" asp-route-taiKhoan="@item.UserName" class="btn btn-sm btn-primary"><i class="fas fa-list"></i></a> |
                                 <a asp-action="UserPasswordChange" asp-route-taiKhoan="@item.UserName" class="btn btn-sm btn-primary"><i class="fas fa-key"></i></a> |

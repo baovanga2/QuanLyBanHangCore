@@ -20,7 +20,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
         public string Ten { get; set; }
 
         [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         [Display(Name = "Ngày sinh")]
         public DateTime NgaySinh { get; set; }
 

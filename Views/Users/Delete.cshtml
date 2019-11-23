@@ -5,7 +5,7 @@
 }
 
 <h1>Xóa</h1>
-
+<h3>Bạn có chắc chắn muốn xóa?</h3>
 <div>
     <h4>Người dùng</h4>
     <hr />
@@ -65,7 +65,7 @@
         <dd class="col-sm-10">
             @foreach (var r in Model.Roles)
             {
-                @r;<br>
+                <p class="mb-sm-2">@r</p>
             }
         </dd>
     </dl>

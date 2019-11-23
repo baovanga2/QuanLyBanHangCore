@@ -41,22 +41,22 @@ namespace QuanLyBanHangCore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Quản trị")]
-        public async Task<IActionResult> Create([Bind("Ten,NgaySinh,GioiTinh,SDT,Email,DiaChi,TaiKhoan,MatKhau,XacNhanMatKhau")] UserCreateViewModel UserCreateViewModel)
+        public async Task<IActionResult> Create([Bind("Ten,NgaySinh,GioiTinh,SDT,Email,DiaChi,TaiKhoan,MatKhau,XacNhanMatKhau")] UserCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var user = new User
                 {
-                    Ten = UserCreateViewModel.Ten,
-                    NgaySinh = UserCreateViewModel.NgaySinh,
-                    GioiTinh = UserCreateViewModel.GioiTinh,
-                    SDT = UserCreateViewModel.SDT,
-                    Email = UserCreateViewModel.Email,
-                    DiaChi = UserCreateViewModel.DiaChi,
-                    UserName = UserCreateViewModel.TaiKhoan
+                    Ten = model.Ten,
+                    NgaySinh = model.NgaySinh,
+                    GioiTinh = model.GioiTinh,
+                    SDT = model.SDT,
+                    Email = model.Email,
+                    DiaChi = model.DiaChi,
+                    UserName = model.TaiKhoan
                 };
 
-                var result = await _userManager.CreateAsync(user, UserCreateViewModel.MatKhau);
+                var result = await _userManager.CreateAsync(user, model.MatKhau);
 
                 if (result.Succeeded)
                 {
@@ -71,7 +71,7 @@ namespace QuanLyBanHangCore.Controllers
                     }
                 }
             }
-            return View(UserCreateViewModel);
+            return View(model);
         }
 
         [HttpGet]
@@ -131,8 +131,12 @@ namespace QuanLyBanHangCore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Quản trị")]
-        public async Task<IActionResult> Edit([Bind("TaiKhoan,Ten,NgaySinh,GioiTinh,SDT,Email,DiaChi")] UserEditViewModel model)
+        public async Task<IActionResult> Edit(string taiKhoan ,[Bind("TaiKhoan,Ten,NgaySinh,GioiTinh,SDT,Email,DiaChi")] UserEditViewModel model)
         {
+            if (taiKhoan != model.TaiKhoan)
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(model.TaiKhoan);
@@ -254,8 +258,12 @@ namespace QuanLyBanHangCore.Controllers
         [HttpPost]
         [Authorize(Roles = "Quản trị")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UserPasswordChange([Bind("TaiKhoan,Ten,MatKhauMoi,XacNhanMatKhauMoi")] UserPasswordChangeViewModel model)
+        public async Task<IActionResult> UserPasswordChange(string taiKhoan ,[Bind("TaiKhoan,Ten,MatKhauMoi,XacNhanMatKhauMoi")] UserPasswordChangeViewModel model)
         {
+            if (taiKhoan != model.TaiKhoan)
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
                 var user = await _userManager.FindByNameAsync(model.TaiKhoan);
@@ -279,7 +287,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> PersonalDetails()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -303,7 +311,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> PersonalEdit()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -344,7 +352,7 @@ namespace QuanLyBanHangCore.Controllers
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    TempData["messageSuccess"] = "Thông tin cá nhân đã cập nhật!";
+                    TempData["messageSuccess"] = "Thông tin của bạn đã cập nhật!";
                     return RedirectToAction("PersonalDetails", new { taiKhoan = user.UserName });
                 }
                 foreach (var error in result.Errors)
@@ -356,7 +364,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public IActionResult ChangePassword()
         {
             return View();
@@ -364,7 +372,7 @@ namespace QuanLyBanHangCore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> ChangePassword([Bind("MatKhauHienTai,MatKhauMoi,XacNhanMatKhauMoi")] ChangePasswordViewModel model)
         {
             if (ModelState.IsValid)
@@ -444,43 +452,44 @@ namespace QuanLyBanHangCore.Controllers
         [Authorize(Roles = "Quản trị")]
         public async Task<IActionResult> ListRoles()
         {
-            var roleViewModels = new List<RoleViewModel>();
+            var model = new List<RoleViewModel>();
             var roles = _roleManager.Roles;
             foreach (var r in roles)
             {
-                var roleViewModel = new RoleViewModel
+                var roleVM = new RoleViewModel
                 {
-                    ID = r.Id,
                     Ten = r.Name
                 };
                 foreach (var u in _userManager.Users)
                 {
                     if (await _userManager.IsInRoleAsync(u, r.Name))
                     {
-                        roleViewModel.Users.Add(u.UserName);
+                        roleVM.Users.Add(u.UserName);
                     }
                 }
-                roleViewModels.Add(roleViewModel);
+                model.Add(roleVM);
             }
-            return View(roleViewModels);
+            return View(model);
         }
 
         [HttpGet]
         [Authorize(Roles = "Quản trị")]
         public async Task<IActionResult> EditUsersInRole(string roleTen)
         {
-            ViewBag.roleTen = roleTen;
+            if (roleTen == null)
+            {
+                return NotFound();
+            }
             var role = await _roleManager.FindByNameAsync(roleTen);
             if (role == null)
             {
                 return NotFound();
             }
-            var usersInRole = new List<UserInRoleViewModel>();
+            var model = new List<UserInRoleViewModel>();
             foreach (var user in _userManager.Users)
             {
                 var userInRole = new UserInRoleViewModel
                 {
-                    UserID = user.Id,
                     TaiKhoan = user.UserName,
                     Ten = user.Ten
                 };
@@ -492,30 +501,31 @@ namespace QuanLyBanHangCore.Controllers
                 {
                     userInRole.IsSelected = false;
                 }
-                usersInRole.Add(userInRole);
+                model.Add(userInRole);
             }
-            return View(usersInRole);
+            ViewBag.roleTen = roleTen;
+            return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Quản trị")]
-        public async Task<IActionResult> EditUsersInRole(List<UserInRoleViewModel> usersInRole, string roleTen)
+        public async Task<IActionResult> EditUsersInRole(string roleTen, List<UserInRoleViewModel> model)
         {
             var role = await _roleManager.FindByNameAsync(roleTen);
             if (role == null)
             {
                 return NotFound();
             }
-            for (int i = 0; i < usersInRole.Count; i++)
+            for (int i = 0; i < model.Count; i++)
             {
-                var user = await _userManager.FindByNameAsync(usersInRole[i].TaiKhoan);
+                var user = await _userManager.FindByNameAsync(model[i].TaiKhoan);
                 IdentityResult result = null;
-                if (usersInRole[i].IsSelected && !(await _userManager.IsInRoleAsync(user, roleTen)))
+                if (model[i].IsSelected && !(await _userManager.IsInRoleAsync(user, roleTen)))
                 {
                     result = await _userManager.AddToRoleAsync(user, roleTen);
                 }
-                else if (!usersInRole[i].IsSelected && await _userManager.IsInRoleAsync(user, roleTen))
+                else if (!model[i].IsSelected && await _userManager.IsInRoleAsync(user, roleTen))
                 {
                     result = await _userManager.RemoveFromRoleAsync(user, roleTen);
                 }
@@ -526,7 +536,7 @@ namespace QuanLyBanHangCore.Controllers
                 
                 if (result.Succeeded)
                 {
-                    if (i < (usersInRole.Count -1))
+                    if (i < (model.Count -1))
                     {
                         continue;
                     }
@@ -540,8 +550,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         [AcceptVerbs("Get", "Post")]
-        [Authorize(Roles = "Quản trị")]
-        public async Task<IActionResult> IsTaiKhoanExists(string taiKhoan)
+        public async Task<IActionResult> KiemTraTaiKhoan(string taiKhoan)
         {
             var user = await _userManager.FindByNameAsync(taiKhoan);
             if (user == null)

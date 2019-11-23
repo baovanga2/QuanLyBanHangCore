@@ -17,14 +17,14 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Categories
-        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Categories.AsNoTracking().ToListAsync());
         }
 
         // GET: Categories/Details/5
-        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -168,7 +168,7 @@ namespace QuanLyBanHangCore.Controllers
         {
             var category = await _context.Categories
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Ten == ten && c.ID != id);
+                .FirstOrDefaultAsync(c => c.Ten.Trim() == ten.Trim() && c.ID != id);
             if (category == null)
             {
                 return Json(true);

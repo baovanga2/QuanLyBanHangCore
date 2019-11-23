@@ -9,9 +9,6 @@ namespace QuanLyBanHangCore.Models
     public class Role
     {
         public int ID { get; set; }
-
-        [Required]
-        [MaxLength(20)]
         [Display(Name = "Tên")]
         public string Ten { get; set; }
         public List<User> Users { get; set; }

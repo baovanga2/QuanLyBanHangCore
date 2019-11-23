@@ -21,7 +21,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Products
-        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> Index(string category, string producer)
         {
             DateTime now = DateTime.Now;
@@ -65,7 +65,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         // GET: Products/Details/5
-        [Authorize(Roles = "Quản trị,Bán hàng,Thủ kho,Kế toán")]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -330,7 +330,7 @@ namespace QuanLyBanHangCore.Controllers
         [AcceptVerbs("Get", "Post")]
         public async Task<IActionResult> KiemTraTen(string ten, int id)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.Ten == ten && p.ID != id);
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Ten.Trim() == ten.Trim() && p.ID != id);
             if (product == null)
             {
                 return Json(true);

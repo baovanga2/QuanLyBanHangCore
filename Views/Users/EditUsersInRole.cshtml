@@ -2,14 +2,13 @@
 
 @{
     ViewData["Title"] = "Sửa quyền hạn";
-    var roleTen = ViewBag.roleTen;
 }
 
 <form method="post">
     <div class="col-md-6">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h5>Thêm hoặc gỡ người dùng từ quyền hạn "@roleTen"</h5>
+                <h5>Thêm hoặc gỡ người dùng từ quyền hạn "@ViewBag.roleTen"</h5>
             </div>
             <div class="card-body">
                 @for (int i = 0; i < Model.Count; i++)

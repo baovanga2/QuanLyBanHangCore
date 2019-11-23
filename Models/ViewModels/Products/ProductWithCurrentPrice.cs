@@ -13,6 +13,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
         public int ID { get; set; }
         [Required(ErrorMessage = "Vui lòng nhập tên!")]
         [MaxLength(100)]
+        [RegularExpression(@"[\S].*", ErrorMessage = "Ký tự đầu tiên không thể là khoảng trắng!")]
         [Remote(action: "KiemTraTen", controller: "Products", AdditionalFields = nameof(ID))]
         [Display(Name = "Tên")]
         public string Ten { get; set; }
