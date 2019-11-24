@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Helpers;
 using QuanLyBanHangCore.Models;
 using QuanLyBanHangCore.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -86,43 +87,23 @@ namespace QuanLyBanHangCore.Controllers
         [Authorize(Roles = "Thu ngân")]
         public async Task<IActionResult> Create()
         {
-            var order = SessionHelper
-                .GetObjectFormJson<OrderCreateViewModel>(HttpContext.Session, "order");
-            if (order == null)
-            {
-                order = new OrderCreateViewModel();
-                SessionHelper.SetObjectAsJson(HttpContext.Session, "order", order);
-            }
-            var productWithCurrentPrices = new List<ProductWithCurrentPrice>();
-            var products = await _context.Products.AsNoTracking().ToListAsync();
+            var order = new OrderCreateViewModel();
+            var products = await _context.Products.Include(p => p.ProductPrices).AsNoTracking().ToListAsync();
             foreach (Product p in products)
             {
-                var productPrice = await _context.ProductPrices
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(pp => pp.ProductID == p.ID
-                        && pp.TGKT > order.ThoiGianTao && pp.TGBD <= order.ThoiGianTao);
                 var productWithCurrentPrice = new ProductWithCurrentPrice
                 {
                     ID = p.ID,
                     Ten = p.Ten,
                     SoLuong = p.SoLuong,
-                    Gia = productPrice.Gia
+                    Gia = p.ProductPrices
+                        .FirstOrDefault(pp => pp.TGKT == DateTime.Parse("9999-1-1")).Gia
                 };
-                productWithCurrentPrices.Add(productWithCurrentPrice);
+                order.Products.Add(productWithCurrentPrice);
             }
-            var customer = await _context.Customers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.ID == order.CustomerID);
-            if (customer == null)
-            {
-                ViewBag.CustomerID = new SelectList(_context.Customers, "ID", "Ten");
-            }
-            else
-            {
-                ViewBag.CustomerID = new SelectList(_context.Customers, "ID", "Ten", customer.ID);
-            }
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "order", order);
+            ViewBag.CustomerID = new SelectList(_context.Customers, "ID", "Ten");
             ViewBag.Order = order;
-            ViewBag.Products = productWithCurrentPrices;
             return View();
         }
 
@@ -157,7 +138,7 @@ namespace QuanLyBanHangCore.Controllers
                     UserID = user.Id,
                     CustomerID = customer.ID
                 };
-                _context.Add(orderAdd);
+                _context.Orders.Add(orderAdd);
                 await _context.SaveChangesAsync();
                 foreach (var i in order.DetailOrders)
                 {
@@ -168,8 +149,8 @@ namespace QuanLyBanHangCore.Controllers
                         OrderID = orderAdd.ID,
                         ProductID = i.ProductID
                     };
-                    _context.Add(detailOrder);
-                    _context.SaveChanges();
+                    _context.DetailOrders.Add(detailOrder);
+                    await _context.SaveChangesAsync();
                     var productEdit = await _context.Products
                         .FirstOrDefaultAsync(p => p.ID == i.ProductID);
                     productEdit.SoLuong -= i.SoLuongBan;
@@ -180,26 +161,8 @@ namespace QuanLyBanHangCore.Controllers
                 HttpContext.Session.Clear();
                 return RedirectToAction("Index");
             }
-            var productWithCurrentPrices = new List<ProductWithCurrentPrice>();
-            var products = await _context.Products.AsNoTracking().ToListAsync();
-            foreach (Product p in products)
-            {
-                var productPrice = await _context.ProductPrices
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(pp => pp.ProductID == p.ID
-                    && pp.TGKT > order.ThoiGianTao && pp.TGBD <= order.ThoiGianTao);
-                var productWithCurrentPrice = new ProductWithCurrentPrice
-                {
-                    ID = p.ID,
-                    Ten = p.Ten,
-                    SoLuong = p.SoLuong,
-                    Gia = productPrice.Gia
-                };
-                productWithCurrentPrices.Add(productWithCurrentPrice);
-            }
             ViewBag.CustomerID = new SelectList(_context.Customers, "ID", "Ten", model.CustomerID);
             ViewBag.Order = order;
-            ViewBag.Products = productWithCurrentPrices;
             return View(model);
         }
 
@@ -297,9 +260,8 @@ namespace QuanLyBanHangCore.Controllers
             {
                 foreach (var i in order.DetailOrders)
                 {
-                    var productUpdate = await _context.Products.FirstOrDefaultAsync(p => p.ID == i.ProductID);
-                    productUpdate.SoLuong += i.SoLuong;
-                    _context.Products.Update(productUpdate);
+                    i.Product.SoLuong += i.SoLuong;
+                    _context.Products.Update(i.Product);
                 }
                 _context.Orders.Remove(order);
                 await _context.SaveChangesAsync();
@@ -346,7 +308,8 @@ namespace QuanLyBanHangCore.Controllers
             {
                 return NotFound();
             }
-            var product = _context.Products.AsNoTracking().FirstOrDefault(p => p.ID == id);
+            var product = _context.Products
+                .Include(p => p.ProductPrices).AsNoTracking().FirstOrDefault(p => p.ID == id);
             if (product == null)
             {
                 return NotFound();
@@ -365,15 +328,12 @@ namespace QuanLyBanHangCore.Controllers
             {
                 if (product.SoLuong > 0)
                 {
-                    var productPrice = _context.ProductPrices
-                        .AsNoTracking()
-                        .FirstOrDefault(pp => pp.ProductID == id
-                            && pp.TGKT > order.ThoiGianTao && pp.TGBD <= order.ThoiGianTao);
                     var item = new ItemCreateViewModel
                     {
                         ProductID = product.ID,
                         ProductTen = product.Ten,
-                        Gia = productPrice.Gia,
+                        Gia = product.ProductPrices
+                            .FirstOrDefault(pp => pp.TGKT == DateTime.Parse("9999-1-1")).Gia,
                         SoLuongBan = 1
                     };
                     order.DetailOrders.Add(item);

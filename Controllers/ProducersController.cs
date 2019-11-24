@@ -60,7 +60,7 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(producer);
+                _context.Producers.Add(producer);
                 await _context.SaveChangesAsync();
                 TempData["messageSuccess"] = $"Nhà sản xuất \"{producer.Ten}\" đã được thêm.";
                 return RedirectToAction("Details", "Producers", new { id = producer.ID });
@@ -102,7 +102,7 @@ namespace QuanLyBanHangCore.Controllers
             {
                 try
                 {
-                    _context.Update(producer);
+                    _context.Producers.Update(producer);
                     await _context.SaveChangesAsync();
                     TempData["messageSuccess"] = $"Nhà sản xuất \"{producer.Ten}\" đã được cập nhật.";
                 }

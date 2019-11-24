@@ -9,6 +9,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
         public OrderCreateViewModel()
         {
             DetailOrders = new List<ItemCreateViewModel>();
+            Products = new List<ProductWithCurrentPrice>();
             ThoiGianTao = DateTime.Now;
         }
 
@@ -17,7 +18,7 @@ namespace QuanLyBanHangCore.Models.ViewModels
         [Required(ErrorMessage = "Vui lòng chọn khách hàng")]
         [Display(Name = "Khách hàng")]
         public int CustomerID { get; set; }
-
+        public List<ProductWithCurrentPrice> Products { get; set; }
         public List<ItemCreateViewModel> DetailOrders { get; set; }
 
         public ulong LayTongTien()

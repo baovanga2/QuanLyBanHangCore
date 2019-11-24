@@ -109,6 +109,7 @@ namespace QuanLyBanHangCore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Thủ kho")]
         public async Task<IActionResult> Create([Bind("ID, Ten, ProducerID, CategoryID, Gia")] ProductWithCurrentPrice productWithCurrentPrice)
         {
             if (ModelState.IsValid)
@@ -122,7 +123,7 @@ namespace QuanLyBanHangCore.Controllers
                     ProducerID = productWithCurrentPrice.ProducerID,
                     CategoryID = productWithCurrentPrice.CategoryID
                 };
-                _context.Add(product);
+                _context.Products.Add(product);
                 await _context.SaveChangesAsync();
                 var productPrice = new ProductPrice
                 {
@@ -131,8 +132,8 @@ namespace QuanLyBanHangCore.Controllers
                     TGKT = DateTime.Parse("9999-1-1"),
                     ProductID = product.ID
                 };
-                _context.Add(productPrice);
-                _context.SaveChanges();
+                _context.ProductPrices.Add(productPrice);
+                await _context.SaveChangesAsync();
                 TempData["messageSuccess"] = $"Sản phẩm \"{productWithCurrentPrice.Ten}\" đã được thêm";
                 return RedirectToAction("Details", "Products", new { id = product.ID });
             }
@@ -197,8 +198,9 @@ namespace QuanLyBanHangCore.Controllers
                         ProducerID = productWithCurrentPrice.ProducerID,
                         CategoryID = productWithCurrentPrice.CategoryID
                     };
-                    _context.Update(product);
-                    ProductPrice productPrice = _context.ProductPrices.First(pp => pp.ProductID == id && pp.TGKT > now);
+                    _context.Products.Update(product);
+                    ProductPrice productPrice = _context.ProductPrices
+                        .First(pp => pp.ProductID == id && pp.TGKT > now);
                     if (productWithCurrentPrice.Gia != productPrice.Gia)
                     {
                         ProductPrice productPriceNew = new ProductPrice
@@ -208,9 +210,9 @@ namespace QuanLyBanHangCore.Controllers
                             TGKT = DateTime.Parse("9999-1-1"),
                             ProductID = productWithCurrentPrice.ID
                         };
-                        _context.Add(productPriceNew);
+                        _context.ProductPrices.Add(productPriceNew);
                         productPrice.TGKT = now;
-                        _context.Update(productPrice);
+                        _context.ProductPrices.Update(productPrice);
                     }
                     await _context.SaveChangesAsync();
                     TempData["messageSuccess"] = $"Sản phẩm \"{productWithCurrentPrice.Ten}\" đã được cập nhật";
@@ -314,7 +316,7 @@ namespace QuanLyBanHangCore.Controllers
                     return NotFound();
                 }
                 product.SoLuong += model.SoLuongThem;
-                _context.Update(product);
+                _context.Products.Update(product);
                 await _context.SaveChangesAsync();
                 TempData["messageSuccess"] = $"Sản phẩm \"{product.Ten}\" đã cập nhật số lượng từ \"{model.SoLuongCo}\" đến \"{product.SoLuong}\"";
                 return RedirectToAction("Details", "Products", new { id = id });

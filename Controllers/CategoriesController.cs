@@ -60,7 +60,7 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                _context.Categories.Add(category);
                 await _context.SaveChangesAsync();
                 TempData["messageSuccess"] = $"Loại sản phẩm \"{category.Ten}\" đã được thêm.";
                 return RedirectToAction("Details", "Categories", new { id = category.ID });
@@ -101,7 +101,7 @@ namespace QuanLyBanHangCore.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    _context.Categories.Update(category);
                     await _context.SaveChangesAsync();
                     TempData["messageSuccess"] = $"Loại sản phẩm \"{category.Ten}\" đã được cập nhật.";
                 }
