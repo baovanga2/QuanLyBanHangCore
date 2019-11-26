@@ -6,9 +6,8 @@
 
 @section Styles
 {
-    @{
-        await Html.RenderPartialAsync("ThuVienBangStylespartial.cshtml");
-    }
+    <!-- Custom styles for this page -->
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 }
 
 <p>
@@ -56,7 +55,7 @@
                                 @Html.DisplayFor(modelItem => item.CustomerName)
                             </td>
                             <td class="text-right">
-                                @{ 
+                                @{
                                     var thanhTien = item.LayTongTien() * 110 / 100;
                                 }
                                 @thanhTien
@@ -79,8 +78,7 @@
 @section Scripts
 {
     @{
-        await Html.RenderPartialAsync("ThuVienBangScriptsPartial.cshtml");
-        await Html.RenderPartialAsync("KichHoatBangScriptsPartial.cshtml");
+        await Html.RenderPartialAsync("_ThuVienBangScriptsPartial.cshtml");
         await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "DH");
     }
 }

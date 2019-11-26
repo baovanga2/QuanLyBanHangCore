@@ -24,10 +24,10 @@ namespace QuanLyBanHangCore.Controllers
         [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> Index(string category, string producer)
         {
-            DateTime now = DateTime.Now;
             var products = await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Producer)
+                .Include(p => p.ProductPrices)
                 .AsNoTracking()
                 .ToListAsync();
             if (!string.IsNullOrEmpty(category))
@@ -45,9 +45,6 @@ namespace QuanLyBanHangCore.Controllers
             };
             foreach (Product p in products)
             {
-                var productPrice = await _context.ProductPrices
-                    .AsNoTracking()
-                    .FirstOrDefaultAsync(pp => pp.ProductID == p.ID && pp.TGKT > now);
                 var productWithCurrentPrice = new ProductWithCurrentPrice
                 {
                     ID = p.ID,
@@ -57,7 +54,7 @@ namespace QuanLyBanHangCore.Controllers
                     Producer = p.Producer,
                     CategoryID = p.CategoryID,
                     Category = p.Category,
-                    Gia = productPrice.Gia
+                    Gia = p.ProductPrices.FirstOrDefault(pp => pp.TGKT == DateTime.Parse("9999-1-1")).Gia
                 };
                 model.Products.Add(productWithCurrentPrice);
             }
@@ -76,24 +73,18 @@ namespace QuanLyBanHangCore.Controllers
             var product = await _context.Products
                 .Include(p => p.Category)
                 .Include(p => p.Producer)
+                .Include(p => p.ProductPrices)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.ID == id);
             if (product == null)
             {
                 return NotFound();
             }
-            DateTime now = DateTime.Now;
-            List<ProductPrice> productPrices = await _context.ProductPrices
-                .AsNoTracking()
-                .Where(pp => pp.ProductID == id)
-                .OrderByDescending(pp => pp.TGKT)
-                .ToListAsync();
-            ProductPrice productPrice = productPrices.First(pp => pp.TGKT > now);
             ProductWithPriceList productWithPriceList = new ProductWithPriceList
             {
                 Product = product,
-                Gia = productPrice.Gia,
-                ProductPrices = productPrices
+                Gia = product.ProductPrices.FirstOrDefault(pp => pp.TGKT == DateTime.Parse("9999-1-1")).Gia,
+                ProductPrices = product.ProductPrices.OrderByDescending(pp => pp.TGKT).ToList()
             };
             return View(productWithPriceList);
         }
@@ -110,36 +101,35 @@ namespace QuanLyBanHangCore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Thủ kho")]
-        public async Task<IActionResult> Create([Bind("ID, Ten, ProducerID, CategoryID, Gia")] ProductWithCurrentPrice productWithCurrentPrice)
+        public async Task<IActionResult> Create([Bind("ID, Ten, ProducerID, CategoryID, Gia")] ProductWithCurrentPrice model)
         {
             if (ModelState.IsValid)
             {
-                DateTime now = DateTime.Now;
                 var product = new Product
                 {
-                    ID = productWithCurrentPrice.ID,
-                    Ten = productWithCurrentPrice.Ten,
+                    ID = model.ID,
+                    Ten = model.Ten,
                     SoLuong = 0,
-                    ProducerID = productWithCurrentPrice.ProducerID,
-                    CategoryID = productWithCurrentPrice.CategoryID
+                    ProducerID = model.ProducerID,
+                    CategoryID = model.CategoryID
                 };
                 _context.Products.Add(product);
                 await _context.SaveChangesAsync();
                 var productPrice = new ProductPrice
                 {
-                    Gia = productWithCurrentPrice.Gia,
-                    TGBD = now,
+                    Gia = model.Gia,
+                    TGBD = DateTime.Now,
                     TGKT = DateTime.Parse("9999-1-1"),
                     ProductID = product.ID
                 };
                 _context.ProductPrices.Add(productPrice);
                 await _context.SaveChangesAsync();
-                TempData["messageSuccess"] = $"Sản phẩm \"{productWithCurrentPrice.Ten}\" đã được thêm";
+                TempData["messageSuccess"] = $"Sản phẩm \"{model.Ten}\" đã được thêm";
                 return RedirectToAction("Details", "Products", new { id = product.ID });
             }
-            ViewBag.CategoryID = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.CategoryID);
-            ViewBag.ProducerID = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.ProducerID);
-            return View(productWithCurrentPrice);
+            ViewBag.CategoryID = new SelectList(_context.Categories, "ID", "Ten", model.CategoryID);
+            ViewBag.ProducerID = new SelectList(_context.Producers, "ID", "Ten", model.ProducerID);
+            return View(model);
         }
 
         // GET: Products/Edit/5
@@ -150,26 +140,25 @@ namespace QuanLyBanHangCore.Controllers
             {
                 return NotFound();
             }
-            var now = DateTime.Now;
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.ID == id);
+            var product = await _context.Products
+                .Include(p => p.ProductPrices)
+                .FirstOrDefaultAsync(p => p.ID == id);
             if (product == null)
             {
                 return NotFound();
             }
-            var productPrice = await _context.ProductPrices
-                .FirstAsync(pp => pp.ProductID == id && pp.TGKT > now);
-            ProductWithCurrentPrice productWithCurrentPrice = new ProductWithCurrentPrice
+            ProductWithCurrentPrice model = new ProductWithCurrentPrice
             {
                 ID = product.ID,
                 Ten = product.Ten,
                 CategoryID = product.CategoryID,
                 ProducerID = product.ProducerID,
                 SoLuong = product.SoLuong,
-                Gia = productPrice.Gia
+                Gia = product.ProductPrices.FirstOrDefault(pp => pp.TGKT == DateTime.Parse("9999-1-1")).Gia
             };
-            ViewBag.CategoryID = new SelectList(_context.Categories, "ID", "Ten", product.CategoryID);
-            ViewBag.ProducerID = new SelectList(_context.Producers, "ID", "Ten", product.ProducerID);
-            return View(productWithCurrentPrice);
+            ViewBag.CategoryID = new SelectList(_context.Categories, "ID", "Ten", model.CategoryID);
+            ViewBag.ProducerID = new SelectList(_context.Producers, "ID", "Ten", model.ProducerID);
+            return View(model);
         }
 
         // POST: Products/Edit/5
@@ -178,9 +167,10 @@ namespace QuanLyBanHangCore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Thủ kho")]
-        public async Task<IActionResult> Edit(int id, [Bind("ID, Ten, SoLuong, ProducerID, CategoryID, Gia")] ProductWithCurrentPrice productWithCurrentPrice)
+        public async Task<IActionResult> Edit(int id, 
+            [Bind("ID, Ten, SoLuong, ProducerID, CategoryID, Gia")] ProductWithCurrentPrice model)
         {
-            if (id != productWithCurrentPrice.ID)
+            if (id != model.ID)
             {
                 return NotFound();
             }
@@ -189,38 +179,38 @@ namespace QuanLyBanHangCore.Controllers
             {
                 try
                 {
-                    DateTime now = DateTime.Now;
                     var product = new Product
                     {
-                        ID = productWithCurrentPrice.ID,
-                        Ten = productWithCurrentPrice.Ten,
-                        SoLuong = productWithCurrentPrice.SoLuong,
-                        ProducerID = productWithCurrentPrice.ProducerID,
-                        CategoryID = productWithCurrentPrice.CategoryID
+                        ID = model.ID,
+                        Ten = model.Ten,
+                        SoLuong = model.SoLuong,
+                        ProducerID = model.ProducerID,
+                        CategoryID = model.CategoryID
                     };
                     _context.Products.Update(product);
                     ProductPrice productPrice = _context.ProductPrices
-                        .First(pp => pp.ProductID == id && pp.TGKT > now);
-                    if (productWithCurrentPrice.Gia != productPrice.Gia)
+                        .First(pp => pp.ProductID == id && pp.TGKT == DateTime.Parse("9999-1-1"));
+                    if (model.Gia != productPrice.Gia)
                     {
+                        DateTime now = DateTime.Now;
                         ProductPrice productPriceNew = new ProductPrice
                         {
-                            Gia = productWithCurrentPrice.Gia,
+                            Gia = model.Gia,
                             TGBD = now,
                             TGKT = DateTime.Parse("9999-1-1"),
-                            ProductID = productWithCurrentPrice.ID
+                            ProductID = model.ID
                         };
                         _context.ProductPrices.Add(productPriceNew);
                         productPrice.TGKT = now;
                         _context.ProductPrices.Update(productPrice);
                     }
                     await _context.SaveChangesAsync();
-                    TempData["messageSuccess"] = $"Sản phẩm \"{productWithCurrentPrice.Ten}\" đã được cập nhật";
-                    return RedirectToAction("Details", "Products", new { id = productWithCurrentPrice.ID });
+                    TempData["messageSuccess"] = $"Sản phẩm \"{model.Ten}\" đã được cập nhật";
+                    return RedirectToAction("Details", "Products", new { id = model.ID });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(productWithCurrentPrice.ID))
+                    if (!ProductExists(model.ID))
                     {
                         return NotFound();
                     }
@@ -230,9 +220,9 @@ namespace QuanLyBanHangCore.Controllers
                     }
                 }
             }
-            ViewBag.CategoryID = new SelectList(_context.Categories, "ID", "Ten", productWithCurrentPrice.CategoryID);
-            ViewBag.ProducerID = new SelectList(_context.Producers, "ID", "Ten", productWithCurrentPrice.ProducerID);
-            return View(productWithCurrentPrice);
+            ViewBag.CategoryID = new SelectList(_context.Categories, "ID", "Ten", model.CategoryID);
+            ViewBag.ProducerID = new SelectList(_context.Producers, "ID", "Ten", model.ProducerID);
+            return View(model);
         }
 
         // GET: Products/Delete/5

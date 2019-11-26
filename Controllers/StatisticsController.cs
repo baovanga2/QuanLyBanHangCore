@@ -56,7 +56,7 @@ namespace QuanLyBanHangCore.Controllers
                 {
                     Ten = p.Key.Ten,
                     Gia = p.Key.Gia,
-                    SoLuong = (ushort)p.Sum(s => s.SoLuong)
+                    SoLuong = (uint)p.Sum(s => s.SoLuong)
                 });
             var products = new List<ProductCount>();
             foreach (var i in itemsGroup)
@@ -102,7 +102,12 @@ namespace QuanLyBanHangCore.Controllers
                     }
                 }
                 var itemsGroup = items.GroupBy(i => new { i.Ten, i.Gia })
-                    .Select(i => new { Ten = i.Key.Ten, Gia = i.Key.Gia, SoLuong = (ushort)i.Sum(c => c.SoLuong) });
+                    .Select(i => new
+                    {
+                        Ten = i.Key.Ten,
+                        Gia = i.Key.Gia,
+                        SoLuong = (uint)i.Sum(c => c.SoLuong)
+                    });
                 var products = new List<ProductCount>();
                 foreach (var i in itemsGroup)
                 {
@@ -130,6 +135,7 @@ namespace QuanLyBanHangCore.Controllers
                 Thang = nowm,
                 Nam = nowy
             };
+
             var orders = await _context.Orders
                 .Include(o => o.DetailOrders)
                     .ThenInclude(dd => dd.Product)
@@ -155,7 +161,7 @@ namespace QuanLyBanHangCore.Controllers
                 {
                     Ten = p.Key.Ten,
                     Gia = p.Key.Gia,
-                    SoLuong = (ushort)p.Sum(s => s.SoLuong)
+                    SoLuong = (uint)p.Sum(s => s.SoLuong)
                 });
             var products = new List<ProductCount>();
             foreach (var i in itemsGroup)
@@ -180,25 +186,15 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var orders = new List<Order>();
-                if (model.Thang == 0)
-                {
-                    orders = await _context.Orders
+                var orders = await _context.Orders
                         .Include(o => o.DetailOrders)
                             .ThenInclude(dd => dd.Product)
                         .AsNoTracking()
                         .Where(o => o.ThoiGianTao.Year == model.Nam)
                         .ToListAsync();
-                }
-                else
+                if (model.Thang != 0)
                 {
-                    orders = await _context.Orders
-                        .Include(o => o.DetailOrders)
-                            .ThenInclude(dd => dd.Product)
-                        .AsNoTracking()
-                        .Where(o => o.ThoiGianTao.Month == model.Thang
-                            && o.ThoiGianTao.Year == model.Nam)
-                        .ToListAsync();
+                    orders = orders.Where(o => o.ThoiGianTao.Month == model.Thang).ToList();
                 }
                 var items = new List<ProductCount>();
                 foreach (var order in orders)
@@ -259,18 +255,18 @@ namespace QuanLyBanHangCore.Controllers
             var items = new List<CustomerCount>();
             foreach (var order in orders)
             {
-                var item = new CustomerCount
-                {
-                    ID = order.CustomerID,
-                    Ten = order.Customer.Ten
-                };
                 ulong tongTien = 0;
                 foreach (var i in order.DetailOrders)
                 {
                     var tamTinh = i.Gia * i.SoLuong;
                     tongTien += tamTinh;
                 }
-                item.Tien = tongTien;
+                var item = new CustomerCount
+                {
+                    ID = order.CustomerID,
+                    Ten = order.Customer.Ten,
+                    Tien = tongTien
+                };
                 items.Add(item);
             }
             var itemsGroup = items.GroupBy(i => new { i.ID, i.Ten }).Select(i => new
@@ -310,18 +306,18 @@ namespace QuanLyBanHangCore.Controllers
                 var items = new List<CustomerCount>();
                 foreach (var order in orders)
                 {
-                    var item = new CustomerCount
-                    {
-                        ID = order.CustomerID,
-                        Ten = order.Customer.Ten
-                    };
                     ulong tongTien = 0;
                     foreach (var i in order.DetailOrders)
                     {
                         var tamTinh = i.Gia * i.SoLuong;
                         tongTien += tamTinh;
                     }
-                    item.Tien = tongTien;
+                    var item = new CustomerCount
+                    {
+                        ID = order.CustomerID,
+                        Ten = order.Customer.Ten,
+                        Tien = tongTien
+                    };
                     items.Add(item);
                 }
                 var itemsGroup = items.GroupBy(i => new { i.ID, i.Ten }).Select(i => new
@@ -367,18 +363,18 @@ namespace QuanLyBanHangCore.Controllers
             var items = new List<CustomerCount>();
             foreach (var order in orders)
             {
-                var item = new CustomerCount
-                {
-                    ID = order.CustomerID,
-                    Ten = order.Customer.Ten
-                };
                 ulong tongTien = 0;
                 foreach (var i in order.DetailOrders)
                 {
                     var tamTinh = i.Gia * i.SoLuong;
                     tongTien += tamTinh;
                 }
-                item.Tien = tongTien;
+                var item = new CustomerCount
+                {
+                    ID = order.CustomerID,
+                    Ten = order.Customer.Ten,
+                    Tien = tongTien
+                };
                 items.Add(item);
             }
             var itemsGroup = items.GroupBy(i => new { i.ID, i.Ten }).Select(i => new
@@ -410,42 +406,32 @@ namespace QuanLyBanHangCore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var orders = new List<Order>();
-                if (model.Thang == 0)
+                var orders = await _context.Orders
+                    .Include(o => o.Customer)
+                    .Include(o => o.DetailOrders)
+                        .ThenInclude(dd => dd.Product)
+                    .AsNoTracking()
+                    .Where(o => o.ThoiGianTao.Year == model.Nam)
+                    .ToListAsync();
+                if (model.Thang != 0)
                 {
-                    orders = await _context.Orders
-                        .Include(o => o.Customer)
-                        .Include(o => o.DetailOrders)
-                            .ThenInclude(dd => dd.Product)
-                        .AsNoTracking()
-                        .Where(o => o.ThoiGianTao.Year == model.Nam)
-                        .ToListAsync();
-                }
-                else
-                {
-                    orders = await _context.Orders
-                        .Include(o => o.Customer)
-                        .Include(o => o.DetailOrders)
-                             .ThenInclude(dd => dd.Product)
-                        .AsNoTracking()
-                        .Where(o => o.ThoiGianTao.Month == model.Thang && o.ThoiGianTao.Year == model.Nam)
-                        .ToListAsync();
+                    orders = orders.Where(o => o.ThoiGianTao.Month == model.Thang).ToList();
                 }
                 var items = new List<CustomerCount>();
                 foreach (var order in orders)
                 {
-                    var item = new CustomerCount
-                    {
-                        ID = order.CustomerID,
-                        Ten = order.Customer.Ten
-                    };
                     ulong tongTien = 0;
                     foreach (var i in order.DetailOrders)
                     {
                         var tamTinh = i.Gia * i.SoLuong;
                         tongTien += tamTinh;
                     }
-                    item.Tien = tongTien;
+                    var item = new CustomerCount
+                    {
+                        ID = order.CustomerID,
+                        Ten = order.Customer.Ten,
+                        Tien = tongTien
+                    };
                     items.Add(item);
                 }
                 var itemsGroup = items.GroupBy(i => new { i.ID, i.Ten }).Select(i => new

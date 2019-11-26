@@ -6,9 +6,8 @@
 
 @section Styles
 {
-    @{
-        await Html.RenderPartialAsync("ThuVienBangStylespartial.cshtml");
-    }
+    <!-- Custom styles for this page -->
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 }
 
 <div class="card shadow mb-4">
@@ -69,8 +68,7 @@
 @section Scripts
 {
     @{
-        await Html.RenderPartialAsync("ThuVienBangScriptsPartial.cshtml");
-        await Html.RenderPartialAsync("KichHoatBangScriptsPartial.cshtml");
+        await Html.RenderPartialAsync("_ThuVienBangScriptsPartial.cshtml");
         await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "TKKHN");
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

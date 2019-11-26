@@ -25,7 +25,7 @@ namespace QuanLyBanHangCore.Controllers
                 .Include(o => o.DetailOrders)
                 .AsNoTracking()
                 .ToListAsync();
-            var ordersNgay = orders.Where(o => o.ThoiGianTao.Date == DateTime.Today);
+            var ordersNgay = orders.Where(o => o.ThoiGianTao.Date == DateTime.Today).ToList();
             double tongTienNgay = 0;
             foreach (var o in ordersNgay)
             {
@@ -36,7 +36,7 @@ namespace QuanLyBanHangCore.Controllers
             }
             var ordersThang = orders
                 .Where(o => o.ThoiGianTao.Month == DateTime.Today.Month
-                    && o.ThoiGianTao.Year == DateTime.Today.Year);
+                    && o.ThoiGianTao.Year == DateTime.Today.Year).ToList();
             double tongTienThang = 0;
             foreach (var o in ordersThang)
             {
@@ -48,7 +48,8 @@ namespace QuanLyBanHangCore.Controllers
             var model = new HomeViewModel
             {
                 TongTienNgay = tongTienNgay,
-                TongTienThang = tongTienThang
+                TongTienThang = tongTienThang,
+                SoDonHangNgay = (uint) ordersNgay.Count()
             };
             string[] months = { "Một", "Hai", "Ba", "Bốn", "Năm", "Sáu", "Bảy", "Tám", "Chín",
                 "Mười", "Mười một", "Mười hai"};

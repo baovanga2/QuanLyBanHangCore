@@ -5,9 +5,8 @@
 }
 @section Styles
 {
-    @{
-        await Html.RenderPartialAsync("ThuVienBangStylespartial.cshtml");
-    }
+    <!-- Custom styles for this page -->
+    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 }
 <h2 class="h3 mb-2 text-gray-800"><i class="fas fa-cart-plus"></i> Thêm đơn hàng</h2>
 <div class="card shadow mb-4" style="border-radius: 20px;">
@@ -108,8 +107,7 @@
         }));
     </script>
     @{
-        await Html.RenderPartialAsync("ThuVienBangScriptsPartial.cshtml");
-        await Html.RenderPartialAsync("KichHoatBangScriptsPartial.cshtml");
+        await Html.RenderPartialAsync("_ThuVienBangScriptsPartial.cshtml");
         await Html.RenderPartialAsync("KichHoatDieuHuongScriptsPartial.cshtml", "DH");
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
