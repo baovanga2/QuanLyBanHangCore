@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
 using QuanLyBanHangCore.Models.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -59,6 +61,16 @@ namespace QuanLyBanHangCore.Controllers
 
                 if (result.Succeeded)
                 {
+                    var nguoiCapNhat = await _userManager.GetUserAsync(User);
+                    var userChange = new UserChange
+                    {
+                        ThoiGian = DateTime.Now,
+                        NguoiCapNhat = nguoiCapNhat.UserName,
+                        HanhDong = "Thêm mới",
+                        NguoiBiCapNhat = user.UserName
+                    };
+                    _context.UserChanges.Add(userChange);
+                    await _context.SaveChangesAsync();
                     TempData["messageSuccess"] = $"Người dùng \"{user.Ten}\" đã được thêm!";
                     return RedirectToAction("Details", "Users", new { taiKhoan = user.UserName });
                 }
@@ -274,6 +286,16 @@ namespace QuanLyBanHangCore.Controllers
                 var result = await _userManager.ResetPasswordAsync(user, token, model.MatKhauMoi);
                 if (result.Succeeded)
                 {
+                    var nguoiCapNhat = await _userManager.GetUserAsync(User);
+                    var userChange = new UserChange
+                    {
+                        ThoiGian = DateTime.Now,
+                        NguoiCapNhat = nguoiCapNhat.UserName,
+                        HanhDong = "Đổi mật khẩu",
+                        NguoiBiCapNhat = user.UserName
+                    };
+                    _context.UserChanges.Add(userChange);
+                    await _context.SaveChangesAsync();
                     TempData["messageSuccess"] = $"Mật khẩu người dùng \"{model.TaiKhoan}\" đã cập nhật!";
                     return RedirectToAction("Index");
                 }

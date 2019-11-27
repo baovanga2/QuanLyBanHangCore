@@ -95,12 +95,25 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Thống kê sản phẩm:</h6>
-                        <a asp-action="CountByProductDate" asp-controller="Statistics" id="liTKSPN" class="collapse-item" >Thống kê theo ngày</a>
+                        <a asp-action="CountByProductDate" asp-controller="Statistics" id="liTKSPN" class="collapse-item">Thống kê theo ngày</a>
                         <a asp-action="CountByProductMonth" asp-controller="Statistics" id="liTKSPT" class="collapse-item">Thống kê theo tháng</a>
                         <hr />
                         <h6 class="collapse-header">Thống kê khách hàng:</h6>
                         <a asp-action="CountByCustomerDate" asp-controller="Statistics" id="liTKKHN" class="collapse-item">Thống kê theo ngày</a>
                         <a asp-action="CountByCustomerMonth" asp-controller="Statistics" id="liTKKHT" class="collapse-item">Thống kê theo tháng</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Nav Item - Ghi nhan -->
+            <div class="nav-item" id="liBG">
+                <a href="" class="nav-link collapsed" data-toggle="collapse" data-target="#collapseBG" aria-expanded="true" aria-controls="collapseBG">
+                    <i class="fas fa-fw fa-users"></i>
+                    <span>Hiển thị bản ghi</span>
+                </a>
+                <div id="collapseBG" class="collapse" aria-labelledby="headingBG" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <a asp-action="ViewOrderChange" asp-controller="Home" id="liBGDH" class="collapse-item">Bản ghi đơn hàng</a>
+                        <a asp-action="ViewUserChange" asp-controller="Home" id="liBGND" class="collapse-item">Bản ghi người dùng</a>
                     </div>
                 </div>
             </div>
@@ -121,7 +134,7 @@
                     </div>
                 </div>
             }
-            
+
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 

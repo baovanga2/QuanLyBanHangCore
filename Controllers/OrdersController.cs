@@ -150,13 +150,20 @@ namespace QuanLyBanHangCore.Controllers
                         ProductID = i.ProductID
                     };
                     _context.DetailOrders.Add(detailOrder);
-                    await _context.SaveChangesAsync();
                     var productEdit = await _context.Products
                         .FirstOrDefaultAsync(p => p.ID == i.ProductID);
                     productEdit.SoLuong -= i.SoLuongBan;
                     _context.Products.Update(productEdit);
-                    await _context.SaveChangesAsync();
                 }
+                var orderChange = new OrderChange
+                {
+                    ThoiGian = orderAdd.ThoiGianTao,
+                    UserName = user.UserName,
+                    HanhDong = "Thêm",
+                    OrderID = orderAdd.ID
+                };
+                _context.OrderChanges.Add(orderChange);
+                await _context.SaveChangesAsync();
                 TempData["messageSuccess"] = $"Đơn hàng \"{orderAdd.ID}\" đã thêm";
                 HttpContext.Session.Clear();
                 return RedirectToAction("Index");
@@ -264,8 +271,18 @@ namespace QuanLyBanHangCore.Controllers
                     _context.Products.Update(i.Product);
                 }
                 _context.Orders.Remove(order);
+                var user = await _userManager.GetUserAsync(User);
+                var orderChange = new OrderChange
+                {
+                    ThoiGian = DateTime.Now,
+                    UserName = user.UserName,
+                    HanhDong = "Xóa",
+                    OrderID = order.ID
+                };
+                _context.OrderChanges.Add(orderChange);
                 await _context.SaveChangesAsync();
                 TempData["messageSuccess"] = $"Đơn hàng \"{order.ID}\" đã xóa";
+                
                 return RedirectToAction("Index");
             }
             catch

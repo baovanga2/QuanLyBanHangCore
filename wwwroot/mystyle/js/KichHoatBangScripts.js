@@ -7,6 +7,9 @@
             "url": "/lib/datatables/language/Vietnamese.json"
         }
     });
+    $('#dtChange').DataTable({
+        order:[0,'desc']
+    });
     $('#dtCustomerCount').DataTable({
         order: [2, 'desc'],
         "columns": [

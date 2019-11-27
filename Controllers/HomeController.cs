@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
 using QuanLyBanHangCore.Models.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +19,7 @@ namespace QuanLyBanHangCore.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> Index()
         {
             var orders = await _context.Orders
@@ -49,7 +50,7 @@ namespace QuanLyBanHangCore.Controllers
             {
                 TongTienNgay = tongTienNgay,
                 TongTienThang = tongTienThang,
-                SoDonHangNgay = (uint) ordersNgay.Count()
+                SoDonHangNgay = (uint)ordersNgay.Count()
             };
             string[] months = { "Một", "Hai", "Ba", "Bốn", "Năm", "Sáu", "Bảy", "Tám", "Chín",
                 "Mười", "Mười một", "Mười hai"};
@@ -68,12 +69,26 @@ namespace QuanLyBanHangCore.Controllers
                 }
                 var tongTienHangThang = new ChartBarViewModel
                 {
-                    Thang = months[i-1],
+                    Thang = months[i - 1],
                     ThuNhap = tongTienThangNay
                 };
                 model.TongTienHangThang.Add(tongTienHangThang);
             }
             return View(model);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
+        public async Task<IActionResult> ViewOrderChange()
+        {
+            return View(await _context.OrderChanges.AsNoTracking().ToListAsync());
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
+        public async Task<IActionResult> ViewUserChange()
+        {
+            return View(await _context.UserChanges.AsNoTracking().ToListAsync());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
