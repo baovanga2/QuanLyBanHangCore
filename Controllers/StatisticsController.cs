@@ -322,7 +322,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Kế toán")]
+        [Authorize(Roles = "Kế toán, Thủ kho")]
         public async Task<IActionResult> ExportByDate(CountByProductDateViewModel model)
         {
             model.Products = await GetProductCountsByDateAsync(model.Dau, model.Cuoi);
@@ -369,7 +369,7 @@ namespace QuanLyBanHangCore.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Kế toán")]
+        [Authorize(Roles = "Kế toán, Thủ kho")]
         public async Task<IActionResult> ExportByMonth(CountByProductMonthViewModel model)
         {
             model.Products = await GetProductCountsByMonthAsync(model.Nam, model.Thang);
