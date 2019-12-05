@@ -71,6 +71,14 @@
     </div>
 </div>
 
+<form method="post" action="ExportByMonth">
+    <p>
+        <input asp-for="Thang" hidden />
+        <input asp-for="Nam" hidden />
+        <button type="submit" class="btn cur-p btn-outline-primary float-right"><i class="fas fa-print"></i> Xuất ra Excel</button>
+    </p>
+</form>
+
 @section Scripts
 {
     @{

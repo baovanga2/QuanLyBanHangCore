@@ -368,6 +368,63 @@ namespace QuanLyBanHangCore.Controllers
                 DateToString(model.Dau) + " đến " + DateToString(model.Cuoi) + ".xlsx");
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Kế toán")]
+        public async Task<IActionResult> ExportByMonth(CountByProductMonthViewModel model)
+        {
+            model.Products = await GetProductCountsByMonthAsync(model.Nam, model.Thang);
+            SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY");
+            var options = SaveOptions.XlsxDefault;
+            var workbook = new ExcelFile();
+            var worksheet = workbook.Worksheets.Add("Sheet1");
+
+            string fileName = "";
+            if (model.Thang != 0)
+            {
+                worksheet.Cells[0, 0].Value = "Các sản phẩm đã bán tháng " + model.Thang +
+                    ", năm " + model.Nam;
+                fileName = "Thống kê tháng " + model.Thang + ", năm " + model.Nam + ".xlsx";
+            }
+            else
+            {
+                worksheet.Cells[0, 0].Value = "Các sản phẩm đã bán năm " + model.Nam;
+                fileName = "Thống kê năm " + model.Nam + ".xlsx";
+            }
+            
+            worksheet.Cells[0, 0].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            worksheet.Cells.GetSubrangeAbsolute(0, 0, 0, 3).Merged = true;
+
+            worksheet.Rows[0].Style.Font.Weight = ExcelFont.BoldWeight;
+            worksheet.Rows[1].Style.Font.Weight = ExcelFont.BoldWeight;
+            worksheet.Columns[2].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            worksheet.Columns[1].Style.HorizontalAlignment = HorizontalAlignmentStyle.Right;
+            worksheet.Columns[3].Style.HorizontalAlignment = HorizontalAlignmentStyle.Right;
+
+            worksheet.Columns[0].SetWidth(500, LengthUnit.Pixel);
+            worksheet.Columns[1].SetWidth(150, LengthUnit.Pixel);
+            worksheet.Columns[2].SetWidth(80, LengthUnit.Pixel);
+            worksheet.Columns[3].SetWidth(150, LengthUnit.Pixel);
+
+            worksheet.Cells["A2"].Value = "Tên sản phẩm";
+            worksheet.Cells["B2"].Value = "Giá";
+            worksheet.Cells["C2"].Value = "Số lượng";
+            worksheet.Cells["D2"].Value = "Tạm tính";
+            var l = model.Products.Count;
+            for (int r = 1; r < l; r++)
+            {
+                var product = model.Products[r - 1];
+                worksheet.Cells[r + 1, 0].Value = product.Ten;
+                worksheet.Cells[r + 1, 1].Value = String.Format("{0:### ### ### ### VND}", product.Gia);
+                worksheet.Cells[r + 1, 2].Value = product.SoLuong;
+                worksheet.Cells[r + 1, 3].Value = String.Format("{0:### ### ### ### VND}", product.LayTamTinh());
+            }
+
+            worksheet.Cells[l + 2, 2].Value = "Tổng tiền:";
+            worksheet.Cells[l + 2, 3].Value = String.Format("{0:### ### ### ### VND}", model.LayTongTien());
+
+            return File(GetBytes(workbook, options), options.ContentType, fileName);
+        }
+
         private string DateToString(DateTime date)
         {
             return date.Day + "-" + date.Month + "-" + date.Year;
