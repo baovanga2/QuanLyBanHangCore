@@ -29,14 +29,33 @@ namespace QuanLyBanHangCore.Controllers
             var model = new CountByProductDateViewModel
             {
                 Dau = now,
-                Cuoi = now
+                Cuoi = now,
+                Products = await GetProductCountsByDateAsync(now, now)
             };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("Statistics/Index")]
+        [Authorize(Roles = "Kế toán, Thủ kho")]
+        public async Task<IActionResult> CountByProductDate(CountByProductDateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Products = await GetProductCountsByDateAsync(model.Dau, model.Cuoi);
+            }
+            return View(model);
+        }
+
+        private async Task<List<ProductCount>> GetProductCountsByDateAsync(DateTime dau, DateTime cuoi)
+        {
             var orders = await _context.Orders
-                .Include(o => o.DetailOrders)
-                    .ThenInclude(dd => dd.Product)
-                .AsNoTracking()
-                .Where(o => o.ThoiGianTao.Date == now)
-                .ToListAsync();
+                    .Include(o => o.DetailOrders)
+                        .ThenInclude(dd => dd.Product)
+                    .AsNoTracking()
+                    .Where(o => dau.Date <= o.ThoiGianTao.Date
+                        && o.ThoiGianTao.Date <= cuoi.Date)
+                    .ToListAsync();
             var items = new List<ProductCount>();
             foreach (var order in orders)
             {
@@ -51,12 +70,12 @@ namespace QuanLyBanHangCore.Controllers
                     items.Add(item);
                 }
             }
-            var itemsGroup = items.GroupBy(p => new { p.Ten, p.Gia })
-                .Select(p => new
+            var itemsGroup = items.GroupBy(i => new { i.Ten, i.Gia })
+                .Select(i => new
                 {
-                    Ten = p.Key.Ten,
-                    Gia = p.Key.Gia,
-                    SoLuong = (uint)p.Sum(s => s.SoLuong)
+                    Ten = i.Key.Ten,
+                    Gia = i.Key.Gia,
+                    SoLuong = (uint)i.Sum(c => c.SoLuong)
                 });
             var products = new List<ProductCount>();
             foreach (var i in itemsGroup)
@@ -69,59 +88,7 @@ namespace QuanLyBanHangCore.Controllers
                 };
                 products.Add(product);
             }
-            model.Products = products;
-            return View(model);
-        }
-
-        [HttpPost]
-        [Route("Statistics/Index")]
-        [Authorize(Roles = "Kế toán, Thủ kho")]
-        public async Task<IActionResult> CountByProductDate(CountByProductDateViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var orders = await _context.Orders
-                    .Include(o => o.DetailOrders)
-                        .ThenInclude(dd => dd.Product)
-                    .AsNoTracking()
-                    .Where(o => model.Dau.Date <= o.ThoiGianTao.Date
-                        && o.ThoiGianTao.Date <= model.Cuoi.Date)
-                    .ToListAsync();
-                var items = new List<ProductCount>();
-                foreach (var order in orders)
-                {
-                    foreach (var i in order.DetailOrders)
-                    {
-                        var item = new ProductCount
-                        {
-                            Ten = i.Product.Ten,
-                            Gia = i.Gia,
-                            SoLuong = i.SoLuong
-                        };
-                        items.Add(item);
-                    }
-                }
-                var itemsGroup = items.GroupBy(i => new { i.Ten, i.Gia })
-                    .Select(i => new
-                    {
-                        Ten = i.Key.Ten,
-                        Gia = i.Key.Gia,
-                        SoLuong = (uint)i.Sum(c => c.SoLuong)
-                    });
-                var products = new List<ProductCount>();
-                foreach (var i in itemsGroup)
-                {
-                    var product = new ProductCount
-                    {
-                        Ten = i.Ten,
-                        Gia = i.Gia,
-                        SoLuong = i.SoLuong
-                    };
-                    products.Add(product);
-                }
-                model.Products = products;
-            }
-            return View(model);
+            return products;
         }
 
         [HttpGet]
@@ -133,15 +100,39 @@ namespace QuanLyBanHangCore.Controllers
             var model = new CountByProductMonthViewModel
             {
                 Thang = nowm,
-                Nam = nowy
+                Nam = nowy,
+                Products = await GetProductCountsByMonthAsync(nowy, nowm)
             };
+            ViewBag.Months = new SelectList(model.Months, "ID", "Ten", nowm);
+            ViewBag.Years = new SelectList(model.Years, nowy);
+            return View(model);
+        }
 
+        [HttpPost]
+        [Authorize(Roles = "Kế toán,Thủ kho")]
+        public async Task<IActionResult> CountByProductMonth(CountByProductMonthViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Products = await GetProductCountsByMonthAsync(model.Nam, model.Thang);
+                ViewBag.Months = new SelectList(model.Months, "ID", "Ten", model.Thang);
+                ViewBag.Years = new SelectList(model.Years, model.Nam);
+            }
+            return View(model);
+        }
+
+        private async Task<List<ProductCount>> GetProductCountsByMonthAsync(int nam, int thang)
+        {
             var orders = await _context.Orders
-                .Include(o => o.DetailOrders)
-                    .ThenInclude(dd => dd.Product)
-                .AsNoTracking()
-                .Where(o => o.ThoiGianTao.Month == nowm && o.ThoiGianTao.Year == nowy)
-                .ToListAsync();
+                        .Include(o => o.DetailOrders)
+                            .ThenInclude(dd => dd.Product)
+                        .AsNoTracking()
+                        .Where(o => o.ThoiGianTao.Year == nam)
+                        .ToListAsync();
+            if (thang != 0)
+            {
+                orders = orders.Where(o => o.ThoiGianTao.Month == thang).ToList();
+            }
             var items = new List<ProductCount>();
             foreach (var order in orders)
             {
@@ -161,7 +152,7 @@ namespace QuanLyBanHangCore.Controllers
                 {
                     Ten = p.Key.Ten,
                     Gia = p.Key.Gia,
-                    SoLuong = (uint)p.Sum(s => s.SoLuong)
+                    SoLuong = (ushort)p.Sum(s => s.SoLuong)
                 });
             var products = new List<ProductCount>();
             foreach (var i in itemsGroup)
@@ -174,65 +165,7 @@ namespace QuanLyBanHangCore.Controllers
                 };
                 products.Add(product);
             }
-            model.Products = products;
-            ViewBag.Months = new SelectList(model.Months, "ID", "Ten", nowm);
-            ViewBag.Years = new SelectList(model.Years, nowy);
-            return View(model);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Kế toán,Thủ kho")]
-        public async Task<IActionResult> CountByProductMonth(CountByProductMonthViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var orders = await _context.Orders
-                        .Include(o => o.DetailOrders)
-                            .ThenInclude(dd => dd.Product)
-                        .AsNoTracking()
-                        .Where(o => o.ThoiGianTao.Year == model.Nam)
-                        .ToListAsync();
-                if (model.Thang != 0)
-                {
-                    orders = orders.Where(o => o.ThoiGianTao.Month == model.Thang).ToList();
-                }
-                var items = new List<ProductCount>();
-                foreach (var order in orders)
-                {
-                    foreach (var i in order.DetailOrders)
-                    {
-                        var item = new ProductCount
-                        {
-                            Ten = i.Product.Ten,
-                            Gia = i.Gia,
-                            SoLuong = i.SoLuong
-                        };
-                        items.Add(item);
-                    }
-                }
-                var itemsGroup = items.GroupBy(p => new { p.Ten, p.Gia })
-                    .Select(p => new
-                    {
-                        Ten = p.Key.Ten,
-                        Gia = p.Key.Gia,
-                        SoLuong = (ushort)p.Sum(s => s.SoLuong)
-                    });
-                var products = new List<ProductCount>();
-                foreach (var i in itemsGroup)
-                {
-                    var product = new ProductCount
-                    {
-                        Ten = i.Ten,
-                        Gia = i.Gia,
-                        SoLuong = i.SoLuong
-                    };
-                    products.Add(product);
-                }
-                model.Products = products;
-                ViewBag.Months = new SelectList(model.Months, "ID", "Ten", model.Thang);
-                ViewBag.Years = new SelectList(model.Years, model.Nam);
-            }
-            return View(model);
+            return products;
         }
 
         [HttpGet]
@@ -243,15 +176,32 @@ namespace QuanLyBanHangCore.Controllers
             var model = new CountByCustomerDateViewModel
             {
                 Dau = now,
-                Cuoi = now
+                Cuoi = now,
+                Customers = await GetCustomerCountsByDateAsync(now, now)
             };
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Kế toán")]
+        public async Task<IActionResult> CountByCustomerDate(CountByCustomerDateViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Customers = await GetCustomerCountsByDateAsync(model.Dau, model.Cuoi);
+            }
+            return View(model);
+        }
+
+        private async Task<List<CustomerCount>> GetCustomerCountsByDateAsync(DateTime dau, DateTime cuoi)
+        {
             var orders = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.DetailOrders)
-                    .ThenInclude(dd => dd.Product)
-                .AsNoTracking()
-                .Where(o => o.ThoiGianTao.Date == now)
-                .ToListAsync();
+                    .Include(o => o.Customer)
+                    .Include(o => o.DetailOrders)
+                        .ThenInclude(dd => dd.Product)
+                    .AsNoTracking()
+                    .Where(o => dau.Date <= o.ThoiGianTao.Date && o.ThoiGianTao.Date <= cuoi.Date)
+                    .ToListAsync();
             var items = new List<CustomerCount>();
             foreach (var order in orders)
             {
@@ -286,60 +236,7 @@ namespace QuanLyBanHangCore.Controllers
                 };
                 customers.Add(customer);
             }
-            model.Customers = customers;
-            return View(model);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Kế toán")]
-        public async Task<IActionResult> CountByCustomerDate(CountByCustomerDateViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var orders = await _context.Orders
-                    .Include(o => o.Customer)
-                    .Include(o => o.DetailOrders)
-                        .ThenInclude(dd => dd.Product)
-                    .AsNoTracking()
-                    .Where(o => model.Dau.Date <= o.ThoiGianTao.Date && o.ThoiGianTao.Date <= model.Cuoi.Date)
-                    .ToListAsync();
-                var items = new List<CustomerCount>();
-                foreach (var order in orders)
-                {
-                    ulong tongTien = 0;
-                    foreach (var i in order.DetailOrders)
-                    {
-                        var tamTinh = i.Gia * i.SoLuong;
-                        tongTien += tamTinh;
-                    }
-                    var item = new CustomerCount
-                    {
-                        ID = order.CustomerID,
-                        Ten = order.Customer.Ten,
-                        Tien = tongTien
-                    };
-                    items.Add(item);
-                }
-                var itemsGroup = items.GroupBy(i => new { i.ID, i.Ten }).Select(i => new
-                {
-                    ID = i.Key.ID,
-                    Ten = i.Key.Ten,
-                    Tien = i.Sum(i => i.Tien)
-                });
-                var customers = new List<CustomerCount>();
-                foreach (var i in itemsGroup)
-                {
-                    var customer = new CustomerCount
-                    {
-                        ID = i.ID,
-                        Ten = i.Ten,
-                        Tien = i.Tien
-                    };
-                    customers.Add(customer);
-                }
-                model.Customers = customers;
-            }
-            return View(model);
+            return customers;
         }
 
         [HttpGet]
@@ -351,15 +248,40 @@ namespace QuanLyBanHangCore.Controllers
             var model = new CountByCustomerMonthViewModel
             {
                 Thang = nowm,
-                Nam = nowy
+                Nam = nowy,
+                Customers = await GetCustomerCountsByMonthAsync(nowy, nowm)
             };
+            ViewBag.Months = new SelectList(model.Months, "ID", "Ten", nowm);
+            ViewBag.Years = new SelectList(model.Years, nowy);
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Kế toán")]
+        public async Task<IActionResult> CountByCustomerMonth(CountByCustomerMonthViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Customers = await GetCustomerCountsByMonthAsync(model.Nam, model.Thang);
+                ViewBag.Months = new SelectList(model.Months, "ID", "Ten", model.Thang);
+                ViewBag.Years = new SelectList(model.Years, model.Nam);
+            }
+            return View(model);
+        }
+
+        private async Task<List<CustomerCount>> GetCustomerCountsByMonthAsync(int nam, int thang)
+        {
             var orders = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.DetailOrders)
-                    .ThenInclude(dd => dd.Product)
-                .AsNoTracking()
-                .Where(o => o.ThoiGianTao.Month == nowm && o.ThoiGianTao.Year == nowy)
-                .ToListAsync();
+                    .Include(o => o.Customer)
+                    .Include(o => o.DetailOrders)
+                        .ThenInclude(dd => dd.Product)
+                    .AsNoTracking()
+                    .Where(o => o.ThoiGianTao.Year == nam)
+                    .ToListAsync();
+            if (thang != 0)
+            {
+                orders = orders.Where(o => o.ThoiGianTao.Month == thang).ToList();
+            }
             var items = new List<CustomerCount>();
             foreach (var order in orders)
             {
@@ -394,68 +316,7 @@ namespace QuanLyBanHangCore.Controllers
                 };
                 customers.Add(customer);
             }
-            model.Customers = customers;
-            ViewBag.Months = new SelectList(model.Months, "ID", "Ten", nowm);
-            ViewBag.Years = new SelectList(model.Years, nowy);
-            return View(model);
-        }
-
-        [HttpPost]
-        [Authorize(Roles = "Kế toán")]
-        public async Task<IActionResult> CountByCustomerMonth(CountByCustomerMonthViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var orders = await _context.Orders
-                    .Include(o => o.Customer)
-                    .Include(o => o.DetailOrders)
-                        .ThenInclude(dd => dd.Product)
-                    .AsNoTracking()
-                    .Where(o => o.ThoiGianTao.Year == model.Nam)
-                    .ToListAsync();
-                if (model.Thang != 0)
-                {
-                    orders = orders.Where(o => o.ThoiGianTao.Month == model.Thang).ToList();
-                }
-                var items = new List<CustomerCount>();
-                foreach (var order in orders)
-                {
-                    ulong tongTien = 0;
-                    foreach (var i in order.DetailOrders)
-                    {
-                        var tamTinh = i.Gia * i.SoLuong;
-                        tongTien += tamTinh;
-                    }
-                    var item = new CustomerCount
-                    {
-                        ID = order.CustomerID,
-                        Ten = order.Customer.Ten,
-                        Tien = tongTien
-                    };
-                    items.Add(item);
-                }
-                var itemsGroup = items.GroupBy(i => new { i.ID, i.Ten }).Select(i => new
-                {
-                    ID = i.Key.ID,
-                    Ten = i.Key.Ten,
-                    Tien = i.Sum(i => i.Tien)
-                });
-                var customers = new List<CustomerCount>();
-                foreach (var i in itemsGroup)
-                {
-                    var customer = new CustomerCount
-                    {
-                        ID = i.ID,
-                        Ten = i.Ten,
-                        Tien = i.Tien
-                    };
-                    customers.Add(customer);
-                }
-                model.Customers = customers;
-                ViewBag.Months = new SelectList(model.Months, "ID", "Ten", model.Thang);
-                ViewBag.Years = new SelectList(model.Years, model.Nam);
-            }
-            return View(model);
+            return customers;
         }
 
         [AcceptVerbs("Get", "Post")]

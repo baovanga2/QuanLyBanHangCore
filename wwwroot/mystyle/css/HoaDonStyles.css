@@ -146,10 +146,10 @@
         border-top: 1px solid #aaa;
         padding: 8px 0
     }
-
 @media print {
     @page {
-        size: landscape
+        size: A4 portrait;
+        margin: 0;
     }
     .invoice {
         font-size: 11px !important;
@@ -166,13 +166,13 @@
         line-height: 18px;
     }
 
-    .invoice footer {
-        position: absolute;
-        bottom: 10px;
-        page-break-after: always
-    }
+        .invoice footer {
+            position: absolute;
+            bottom: 10px;
+            page-break-after: always
+        }
 
-    .invoice > div:last-child {
-        page-break-before: always
-    }
+        .invoice > div:last-child {
+            page-break-before: always
+        }
 }
