@@ -73,6 +73,14 @@
     </div>
 </div>
 
+<form method="post" action="ExportByDate">
+    <p>
+        <input asp-for="Dau" hidden />
+        <input asp-for="Cuoi" hidden />
+        <button type="submit" class="btn cur-p btn-outline-primary float-right"><i class="fas fa-print"></i> Xuất ra Excel</button>
+    </p>
+</form>
+
 @section Scripts
 {
     @{

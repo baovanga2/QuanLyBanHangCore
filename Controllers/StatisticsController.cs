@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using GemBox.Spreadsheet;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using QuanLyBanHangCore.Models;
 using QuanLyBanHangCore.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -317,6 +319,67 @@ namespace QuanLyBanHangCore.Controllers
                 customers.Add(customer);
             }
             return customers;
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Kế toán")]
+        public async Task<IActionResult> ExportByDate(CountByProductDateViewModel model)
+        {
+            model.Products = await GetProductCountsByDateAsync(model.Dau, model.Cuoi);
+            SpreadsheetInfo.SetLicense("FREE-LIMITED-KEY");
+            var options = SaveOptions.XlsxDefault;
+            var workbook = new ExcelFile();
+            var worksheet = workbook.Worksheets.Add("Sheet1");
+
+            worksheet.Cells[0, 0].Value = "Các sản phẩm đã bán từ " + DateToString(model.Dau) +
+                " đến " + DateToString(model.Cuoi);
+            worksheet.Cells[0, 0].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            worksheet.Cells.GetSubrangeAbsolute(0, 0, 0, 3).Merged = true;
+
+            worksheet.Rows[0].Style.Font.Weight = ExcelFont.BoldWeight;
+            worksheet.Rows[1].Style.Font.Weight = ExcelFont.BoldWeight;
+            worksheet.Columns[2].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            worksheet.Columns[1].Style.HorizontalAlignment = HorizontalAlignmentStyle.Right;
+            worksheet.Columns[3].Style.HorizontalAlignment = HorizontalAlignmentStyle.Right;
+
+            worksheet.Columns[0].SetWidth(500, LengthUnit.Pixel);
+            worksheet.Columns[1].SetWidth(150, LengthUnit.Pixel);
+            worksheet.Columns[2].SetWidth(80, LengthUnit.Pixel);
+            worksheet.Columns[3].SetWidth(150, LengthUnit.Pixel);
+
+            worksheet.Cells["A2"].Value = "Tên sản phẩm";
+            worksheet.Cells["B2"].Value = "Giá";
+            worksheet.Cells["C2"].Value = "Số lượng";
+            worksheet.Cells["D2"].Value = "Tạm tính";
+            var l = model.Products.Count;
+            for (int r = 1; r < l; r++)
+            {
+                var product = model.Products[r - 1];
+                worksheet.Cells[r+1, 0].Value = product.Ten;
+                worksheet.Cells[r+1, 1].Value = String.Format("{0:### ### ### ### VND}", product.Gia);
+                worksheet.Cells[r+1, 2].Value = product.SoLuong;
+                worksheet.Cells[r+1, 3].Value = String.Format("{0:### ### ### ### VND}", product.LayTamTinh());
+            }
+
+            worksheet.Cells[l + 2, 2].Value = "Tổng tiền:";
+            worksheet.Cells[l + 2, 3].Value = String.Format("{0:### ### ### ### VND}", model.LayTongTien());
+
+            return File(GetBytes(workbook, options), options.ContentType, "Thống kê từ " +
+                DateToString(model.Dau) + " đến " + DateToString(model.Cuoi) + ".xlsx");
+        }
+
+        private string DateToString(DateTime date)
+        {
+            return date.Day + "-" + date.Month + "-" + date.Year;
+        }
+
+        private static byte[] GetBytes(ExcelFile file, SaveOptions options)
+        {
+            using (var stream = new MemoryStream())
+            {
+                file.Save(stream, options);
+                return stream.ToArray();
+            }
         }
 
         [AcceptVerbs("Get", "Post")]
