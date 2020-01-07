@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QuanLyBanHangCore.Models.ViewModels
+namespace QuanLyBanHangCore.ViewModels
 {
     public class RoleViewModel
     {

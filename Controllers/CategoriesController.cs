@@ -16,7 +16,7 @@ namespace QuanLyBanHangCore.Controllers
             _context = context;
         }
 
-        // GET: Categories
+        [HttpGet]
         [Authorize(Roles = "Quản trị, Thu ngân, Thủ kho, Kế toán")]
         public async Task<IActionResult> Index()
         {

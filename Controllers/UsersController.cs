@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyBanHangCore.Models;
-using QuanLyBanHangCore.Models.ViewModels;
+using QuanLyBanHangCore.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -432,24 +432,24 @@ namespace QuanLyBanHangCore.Controllers
         [Route("Account/Login")]
         public IActionResult Login(string ReturnUrl = "")
         {
-            var login = new LoginViewModel { ReturnUrl = ReturnUrl };
-            return View(login);
+            var model = new LoginVM { ReturnUrl = ReturnUrl };
+            return View(model);
         }
 
         [HttpPost]
         [AllowAnonymous]
         [Route("Account/Login")]
-        public async Task<IActionResult> Login(LoginViewModel loginViewModel)
+        public async Task<IActionResult> Login(LoginVM model)
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(loginViewModel.TaiKhoan,
-                    loginViewModel.MatKhau, loginViewModel.GhiNhoToi, false);
+                var result = await _signInManager.PasswordSignInAsync(model.TaiKhoan,
+                    model.MatKhau, model.GhiNhoToi, false);
                 if (result.Succeeded)
                 {
-                    if (!string.IsNullOrEmpty(loginViewModel.ReturnUrl) && Url.IsLocalUrl(loginViewModel.ReturnUrl))
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
                     {
-                        return LocalRedirect(loginViewModel.ReturnUrl);
+                        return LocalRedirect(model.ReturnUrl);
                     }
                     else
                     {
@@ -458,7 +458,7 @@ namespace QuanLyBanHangCore.Controllers
                 }
                 ModelState.AddModelError(string.Empty, "Tài khoản và mật khẩu không đúng!");
             }
-            return View(loginViewModel);
+            return View(model);
         }
 
         [HttpGet]

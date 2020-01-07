@@ -1,4 +1,4 @@
-﻿@model LoginViewModel
+﻿@model LoginVM
 
 @{ 
     Layout = null;
@@ -16,7 +16,7 @@
 
     <!-- Custom fonts for this template-->
     <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lobster|Nunito&display=swap&subset=vietnamese" rel="stylesheet">
 
     <!-- Custom styles for this template-->
     <link href="~/mystyle/css/sb-admin-2.min.css" rel="stylesheet" />
@@ -33,7 +33,7 @@
     <div class="container">
         <!-- Outer Row -->
         <div class="row justify-content-center">
-            <div class="col-md-10">
+            <div class="col-sm-10 col-md-8 col-lg-10">
                 <div class="card o-hidden border-0 shadow-lg my-5">
                     <div class="card-body p-0">
                         <!-- Nested Row within Card Body -->
@@ -44,22 +44,32 @@
                             <div class="col-lg-6">
                                 <div class="p-5">
                                     <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">PC Shop</h1>
-                                        <h1 class="h4 text-gray-900 mb-4">Chào mừng trở lại!</h1>
+                                        <h2 class="text-gray-900 mb-2" style="font-family: 'Lobster', cursive;">PC Shop</h2>
+                                        <h2 class="text-gray-900 mb-4" style="font-family: 'Lobster', cursive;">Chào mừng trở lại!</h2>
                                         <br />
                                     </div>
                                     <form asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">
                                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                         <div class="form-group">
-                                            <input asp-for="TaiKhoan" class="form-control form-control-user" placeholder="Nhập tài khoản...">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                                </div>
+                                                <input asp-for="TaiKhoan" class="form-control" placeholder="Nhập tài khoản...">
+                                            </div>
                                             <span asp-validation-for="TaiKhoan" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <input asp-for="MatKhau" class="form-control form-control-user" placeholder="Mật khẩu">
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                                </div>
+                                                <input asp-for="MatKhau" class="form-control form-control-user" placeholder="Mật khẩu">
+                                            </div>
                                             <span asp-validation-for="MatKhau" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <div class="custom-control custom-checkbox small">
+                                            <div class="custom-control custom-checkbox">
                                                 <input asp-for="GhiNhoToi" type="checkbox" class="custom-control-input">
                                                 <label asp-for="GhiNhoToi" class="custom-control-label"></label>
                                             </div>

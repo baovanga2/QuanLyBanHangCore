@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace QuanLyBanHangCore.Models.ViewModels
+namespace QuanLyBanHangCore.ViewModels
 {
-    public class LoginViewModel
+    public class LoginVM
     {
         [Required(ErrorMessage = "Vui lòng nhập tài khoản!")]
         [Display(Name = "Tài khoản")]

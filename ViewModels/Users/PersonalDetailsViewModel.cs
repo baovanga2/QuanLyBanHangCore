@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace QuanLyBanHangCore.Models.ViewModels
+namespace QuanLyBanHangCore.ViewModels
 {
     public class PersonalDetailsViewModel
     {
